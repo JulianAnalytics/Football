@@ -1,4 +1,4 @@
-A shot map using RStudio for all of Mo Salah´s shots in the 2019/20 season.
+A shot map using RStudio for Mo Salah´s shots in the 2019/20 season.
 
 A half-pitch is plotted before seperating shots into outcome (goal, missed, saved) by colour and body part (head, left, right) by shape. 
 
