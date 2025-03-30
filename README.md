@@ -1,4 +1,4 @@
-#My collection of football-related data models and visualisations:#
+My collection of football-related data models and visualisations:
 
 ⚽ Three position-specific recruitment models for defined archetypal roles which identify and score players based on technical performance data
 
