@@ -10,7 +10,7 @@
 
 ⚽ Match dashboard using event data from the Statsbomb API
 
-⚽ Match prediction model using machine learning
+⚽ Match prediction model using a random forrest method 
 
 
 
