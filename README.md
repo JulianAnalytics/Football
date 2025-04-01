@@ -2,13 +2,13 @@
 
 ⚽ Three position-specific recruitment models for defined archetypal roles which identify and score players based on technical performance data
 
-⚽ Shotmap in R which illustrates the outcome of all of Mo Salah´s 2019/20 shots
-
 ⚽ Two Premier League trivia quizzes
 
-⚽ Web scraper for FBref.com
+⚽ Data gathering methods for scraping from FBref.com and utilising the StatsBomb API
 
-⚽ Match dashboard using event data from the Statsbomb API
+⚽ Visualisations including match dashboards and passing networks
+
+⚽ Shotmap in R which illustrates the outcome of all of Mo Salah´s 2019/20 shots
 
 ⚽ Match prediction model using a random forrest method 
 
