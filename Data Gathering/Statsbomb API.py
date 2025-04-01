@@ -2,7 +2,13 @@
 
 from statsbombpy import sb
 
-sb.competitions()
+# Find competitions id
+competitions = sb.competitions()
+
+competitions = competitions[
+    (competitions['country_name'] == 'Europe') & (competitions['competition_gender'] == 'female')]
+
+competitions.head()
 
 # STATSBOMB - UEFA Women's Euro 2022
 
