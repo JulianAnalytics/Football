@@ -4,7 +4,7 @@
 
 ⚽ Two Premier League trivia quizzes
 
-⚽ Data gathering methods for scraping from FBref.com and utilising the StatsBomb API
+⚽ Data gathering methods for scraping from FBref.com, Transfermarkt.com and utilising the StatsBomb API
 
 ⚽ Visualisations including match dashboards and passing networks
 
