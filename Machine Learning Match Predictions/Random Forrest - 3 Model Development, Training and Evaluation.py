@@ -50,7 +50,7 @@ predictions = clf.predict(X_test)
 accuracy = accuracy_score(y_test, predictions)
 accuracy
 
-# Create categorical variables for home, away, referee and venue
+# Create binary variables for home, away, referee and venue
 df = pd.get_dummies(df, columns=['Home', 'Away', 'Referee', 'Venue'])
 
 
@@ -95,7 +95,7 @@ match = {
     'Venue_Stamford Bridge': [1]
 }
 
-#For all other categorical variables return 0 values intead of null
+#For all other binary variables return 0 values intead of null
 match = pd.DataFrame(columns=X_train.columns, data=data)
 
 #Predict match outcome!
