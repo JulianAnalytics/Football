@@ -3,7 +3,7 @@ import pandas as pd
 # Define dates for data set 
 dates = pd.date_range(start='1/1/2018', end='5/31/2024', freq='YS')
 
-# Scrape La Liga and Premier League match data over the predefined date range
+# Scrape FBREF for La Liga and Premier League match data over the predefined date range
 all_dfs = []
 for date in dates:
     season_start = date.year
