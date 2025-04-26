@@ -25,6 +25,8 @@ class PLTeamQuiz:
             # Read CSV from string
             csv_string = StringIO(response.text)
             self.df = pd.read_csv(csv_string)
+            # Convert all team names to lowercase for case-insensitive comparison
+            self.df['Squad'] = self.df['Squad'].str.lower()
             self.all_teams = sorted(self.df['Squad'].unique())
         except Exception as e:
             st.error(f"Error loading data: {str(e)}")
@@ -43,6 +45,8 @@ class PLTeamQuiz:
     
     def find_players_for_team(self, team):
         """Find all players who have played for a team."""
+        # Convert team name to lowercase for case-insensitive comparison
+        team = team.lower()
         return set(self.df[self.df['Squad'] == team]['Player'].unique())
     
     def create_ui(self):
@@ -95,9 +99,10 @@ class PLTeamQuiz:
         with col2:
             if st.button("Submit Guess", type="primary"):
                 if guess:
-                    if guess not in st.session_state.guesses:
+                    guess_lower = guess.strip().lower()  # Normalize guess to lowercase
+                    if guess_lower not in [g.lower() for g in st.session_state.guesses]:  # Compare case-insensitively
                         st.session_state.guesses.append(guess)
-                        if guess in st.session_state.common_players:
+                        if guess_lower in [p.lower() for p in st.session_state.common_players]:  # Compare case-insensitively
                             st.session_state.correct_count += 1
         
         with col3:
@@ -114,9 +119,9 @@ class PLTeamQuiz:
     
     def show_results(self):
         """Show the results of the user's guesses."""
-        correct_guesses = set(st.session_state.guesses) & set(st.session_state.common_players)
-        incorrect_guesses = set(st.session_state.guesses) - set(st.session_state.common_players)
-        remaining = set(st.session_state.common_players) - correct_guesses
+        correct_guesses = set([g.lower() for g in st.session_state.guesses]) & set([p.lower() for p in st.session_state.common_players])
+        incorrect_guesses = set([g.lower() for g in st.session_state.guesses]) - set([p.lower() for p in st.session_state.common_players])
+        remaining = set([p.lower() for p in st.session_state.common_players]) - correct_guesses
         
         # Create a progress bar
         progress = len(correct_guesses) / len(st.session_state.common_players)
@@ -134,7 +139,8 @@ class PLTeamQuiz:
         # Show guesses with emojis
         st.write("### Your Guesses")
         for guess in st.session_state.guesses:
-            if guess in correct_guesses:
+            guess_lower = guess.lower()
+            if guess_lower in correct_guesses:
                 st.success(f"✅ {guess}")
             else:
                 st.error(f"❌ {guess}")
