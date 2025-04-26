@@ -18,7 +18,7 @@ class PLTeamQuiz:
         """Load player data from CSV."""
         try:
             # Load data from GitHub raw file
-            url = "https://raw.githubusercontent.com/julianball/pl-team-quiz/main/data/premier_league_players.csv"
+            url = "https://raw.githubusercontent.com/JulianB22/Football/main/data/premier_league_players.csv"
             response = requests.get(url)
             response.raise_for_status()  # Raise an exception for bad status codes
             
