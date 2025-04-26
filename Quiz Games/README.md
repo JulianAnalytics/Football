@@ -2,10 +2,6 @@
 
 A fun quiz game that challenges your knowledge of Premier League players! Try to name players who have played for both of your selected teams.
 
-## 🎮 Play Now
-
-You can play the game here: [Premier League Team Connection Quiz](https://pl-team-quiz.streamlit.app)
-
 ## 🎯 How to Play
 
 1. Select two different Premier League teams
@@ -29,19 +25,3 @@ You can play the game here: [Premier League Team Connection Quiz](https://pl-tea
 - Score tracking
 - Mobile-friendly design
 - Answer revelation option
-
-## 🚀 Running Locally
-
-1. Clone this repository
-2. Install requirements:
-```bash
-pip install -r requirements.txt
-```
-3. Run the app:
-```bash
-streamlit run app.py
-```
-
-## 📝 License
-
-This project is open source and available under the MIT License.
