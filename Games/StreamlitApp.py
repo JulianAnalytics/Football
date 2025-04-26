@@ -62,10 +62,12 @@ class PLTeamQuiz:
         col1, col2 = st.columns(2)
         
         with col1:
-            team1 = st.selectbox("Select First Team:", self.all_teams, key='team1')
+            # Display teams with the first letter of each word capitalized
+            team1 = st.selectbox("Select First Team:", [team.title() for team in self.all_teams], key='team1')
         
         with col2:
-            team2 = st.selectbox("Select Second Team:", self.all_teams, key='team2')
+            # Display teams with the first letter of each word capitalized
+            team2 = st.selectbox("Select Second Team:", [team.title() for team in self.all_teams], key='team2')
         
         if st.button("Find Connections", type="primary"):
             if team1 == team2:
@@ -78,8 +80,13 @@ class PLTeamQuiz:
     
     def find_connections(self, team1, team2):
         """Find players who played for both teams."""
-        team1_players = self.find_players_for_team(team1)
-        team2_players = self.find_players_for_team(team2)
+        # Convert team names to lowercase for comparison
+        team1_lower = team1.lower()
+        team2_lower = team2.lower()
+        
+        team1_players = self.find_players_for_team(team1_lower)
+        team2_players = self.find_players_for_team(team2_lower)
+        
         st.session_state.common_players = sorted(list(team1_players & team2_players))
         st.session_state.guesses = []
         st.session_state.show_answers = False
@@ -147,3 +154,4 @@ class PLTeamQuiz:
 
 if __name__ == "__main__":
     quiz = PLTeamQuiz()
+
