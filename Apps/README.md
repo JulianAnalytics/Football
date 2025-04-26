@@ -4,7 +4,7 @@ A fun quiz game that challenges your knowledge of Premier League players! Try to
 
 ## 🎮 Play Now
 
-You can play the game here: [Premier League Team Connection Quiz](https://pl-team-quiz.streamlit.app)
+You can play the game here: [Premier League Team Connection Quiz](https://premier-league-squad-game.streamlit.app/)
 
 ## 🎯 How to Play
 
