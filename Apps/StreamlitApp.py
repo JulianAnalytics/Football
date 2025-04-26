@@ -1,3 +1,9 @@
+import streamlit as st
+import pandas as pd
+import requests
+from io import StringIO
+import unicodedata
+
 class PLTeamQuiz:
     def __init__(self):
         st.set_page_config(
@@ -8,7 +14,7 @@ class PLTeamQuiz:
         self.load_data()
         self.initialize_session_state()
         self.create_ui()
-
+    
     def load_readme(self):
         """Load README from the Apps folder and display it."""
         try:
@@ -24,7 +30,7 @@ class PLTeamQuiz:
             st.error("README.md file not found in the Apps folder.")
         except Exception as e:
             st.error(f"Error loading README file: {str(e)}")
-
+    
     def load_data(self):
         """Load player data from CSV."""
         try:
@@ -175,3 +181,4 @@ class PLTeamQuiz:
 
 if __name__ == "__main__":
     quiz = PLTeamQuiz()
+
