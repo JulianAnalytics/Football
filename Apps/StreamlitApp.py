@@ -3,22 +3,7 @@ import pandas as pd
 import requests
 from io import StringIO
 import unicodedata
-import os
 
-def load_readme(file_path):
-    """Load and display the content of a README file."""
-    try:
-        with open(file_path, 'r', encoding='utf-8') as file:
-            return file.read()
-    except FileNotFoundError:
-        return f"README file not found at {file_path}."
-    except Exception as e:
-        return f"Error loading README: {str(e)}"
-
-# Path to the README file inside your specific folder
-readme_path = "Apps/README.md"  # Ensure this path is correct
-
-# Create the PLTeamQuiz class (the main app)
 class PLTeamQuiz:
     def __init__(self):
         st.set_page_config(
@@ -174,14 +159,5 @@ class PLTeamQuiz:
             else:
                 st.error(f"❌ {guess}")
 
-# Main logic to display either README or app
 if __name__ == "__main__":
-    show_readme = st.sidebar.checkbox("Show README", value=False)
-    
-    if show_readme:
-        # If user selects Show README, display the README file
-        readme_content = load_readme(readme_path)
-        st.markdown(readme_content)
-    else:
-        # Otherwise, display the main app
-        quiz = PLTeamQuiz()
+    quiz = PLTeamQuiz()
