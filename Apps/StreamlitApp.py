@@ -11,42 +11,9 @@ class PLTeamQuiz:
             page_icon="⚽",
             layout="wide"
         )
-        self.add_meta_tags()
         self.load_data()
         self.initialize_session_state()
         self.create_ui()
-    
-    def add_meta_tags(self):
-        """Add meta tags for Open Graph and Twitter Cards for link previews."""
-        app_url = "https://your-app-link-here.com"  # Replace with your actual app URL
-        readme_path = "Apps/README.md"
-        
-        # Load the README file content to use as a preview
-        try:
-            with open(readme_path, 'r', encoding='utf-8') as file:
-                readme_content = file.read()
-            # Taking the first 200 characters of the README as the description
-            description = readme_content[:200] + "..."
-        except FileNotFoundError:
-            description = "Premier League Team Connection Quiz - Can you guess the players who have played for both teams?"
-        
-        # Create the Open Graph meta tags and Twitter meta tags
-        meta_tags = f"""
-        <meta property="og:title" content="Premier League Team Connection Quiz" />
-        <meta property="og:description" content="{description}" />
-        <meta property="og:image" content="https://your-image-url.com" />
-        <meta property="og:url" content="{app_url}" />
-        <meta property="og:type" content="website" />
-        
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Premier League Team Connection Quiz" />
-        <meta name="twitter:description" content="{description}" />
-        <meta name="twitter:image" content="https://your-image-url.com" />
-        <meta name="twitter:url" content="{app_url}" />
-        """
-        
-        # Inject the meta tags using Streamlit's markdown, and ensure they don't display on the page
-        st.markdown(meta_tags, unsafe_allow_html=True)
     
     def load_data(self):
         """Load player data from CSV."""
@@ -85,6 +52,7 @@ class PLTeamQuiz:
     
     def normalize_string(self, text):
         """Normalize a string by removing accents."""
+        # Normalize the string and remove accents (NFD: Normalization Form Decomposed)
         return ''.join(c for c in unicodedata.normalize('NFD', text) if unicodedata.category(c) != 'Mn')
     
     def create_ui(self):
@@ -135,7 +103,8 @@ class PLTeamQuiz:
     
     def show_quiz_interface(self):
         """Show the quiz interface with guessing and scoring."""
-        col1, col2, col3 = st.columns([2, 1, 1])
+        # Create three columns
+        col1, col2, col3 = st.columns([2,1,1])
         
         with col1:
             guess = st.text_input("Enter a player name:", key="guess_input")
@@ -143,10 +112,11 @@ class PLTeamQuiz:
         with col2:
             if st.button("Submit Guess", type="primary"):
                 if guess:
+                    # Normalize guess to lowercase and remove accents
                     guess_normalized = self.normalize_string(guess.strip().lower())
-                    if guess_normalized not in [self.normalize_string(g.lower()) for g in st.session_state.guesses]:
+                    if guess_normalized not in [self.normalize_string(g.lower()) for g in st.session_state.guesses]:  # Compare case-insensitively
                         st.session_state.guesses.append(guess)
-                        if guess_normalized in [self.normalize_string(p.lower()) for p in st.session_state.common_players]:
+                        if guess_normalized in [self.normalize_string(p.lower()) for p in st.session_state.common_players]:  # Compare case-insensitively
                             st.session_state.correct_count += 1
         
         with col3:
@@ -167,9 +137,11 @@ class PLTeamQuiz:
         incorrect_guesses = set([self.normalize_string(g.lower()) for g in st.session_state.guesses]) - set([self.normalize_string(p.lower()) for p in st.session_state.common_players])
         remaining = set([self.normalize_string(p.lower()) for p in st.session_state.common_players]) - correct_guesses
         
+        # Create a progress bar
         progress = len(correct_guesses) / len(st.session_state.common_players)
         st.progress(progress)
         
+        # Show stats in columns
         col1, col2, col3 = st.columns(3)
         with col1:
             st.metric("✅ Correct", len(correct_guesses))
@@ -178,6 +150,7 @@ class PLTeamQuiz:
         with col3:
             st.metric("🎯 Remaining", len(remaining))
         
+        # Show guesses with emojis
         st.write("### Your Guesses")
         for guess in st.session_state.guesses:
             guess_normalized = self.normalize_string(guess.lower())
@@ -188,3 +161,4 @@ class PLTeamQuiz:
 
 if __name__ == "__main__":
     quiz = PLTeamQuiz()
+
