@@ -18,17 +18,7 @@ def load_readme(file_path):
 # Path to the README file inside your specific folder
 readme_path = "Apps/README.md"
 
-# Load the README content
-readme_content = load_readme(readme_path)
-
-# Display the README in the Streamlit app
-st.markdown(readme_content)
-
-# Your other app code goes here...
-
-
-
-
+# Create the PLTeamQuiz class (the main app)
 class PLTeamQuiz:
     def __init__(self):
         st.set_page_config(
@@ -184,6 +174,14 @@ class PLTeamQuiz:
             else:
                 st.error(f"❌ {guess}")
 
+# Main logic to display either README or app
 if __name__ == "__main__":
-    quiz = PLTeamQuiz()
-
+    show_readme = st.sidebar.checkbox("Show README", value=False)
+    
+    if show_readme:
+        # If user selects Show README, display the README file
+        readme_content = load_readme(readme_path)
+        st.markdown(readme_content)
+    else:
+        # Otherwise, display the main app
+        quiz = PLTeamQuiz()
