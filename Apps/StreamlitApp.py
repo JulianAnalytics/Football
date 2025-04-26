@@ -1,6 +1,9 @@
 import streamlit as st
+import pandas as pd
 import requests
 from io import StringIO
+import unicodedata
+import os
 
 def load_readme(file_path):
     """Load and display the content of a README file."""
@@ -15,19 +18,7 @@ def load_readme(file_path):
 # Path to the README file inside your specific folder
 readme_path = "Apps/README.md"  # Ensure this path is correct
 
-# Load the README content
-readme_content = load_readme(readme_path)
-
-# Inject Open Graph meta tags for link preview (description) when shared
-st.markdown(f"""
-    <meta property="og:title" content="Premier League Team Connection Quiz" />
-    <meta property="og:description" content="{readme_content[:300]}..." />
-    <meta property="og:image" content="https://example.com/your-image.jpg" />  <!-- Optionally, you can add an image -->
-    <meta property="og:url" content="https://your-streamlit-app-link.com" />
-    <meta name="twitter:card" content="summary_large_image" />
-""", unsafe_allow_html=True)
-
-# Create the main app (the quiz app)
+# Create the PLTeamQuiz class (the main app)
 class PLTeamQuiz:
     def __init__(self):
         st.set_page_config(
@@ -183,7 +174,14 @@ class PLTeamQuiz:
             else:
                 st.error(f"❌ {guess}")
 
-# Main logic to start the quiz app
+# Main logic to display either README or app
 if __name__ == "__main__":
-    quiz = PLTeamQuiz()
-
+    show_readme = st.sidebar.checkbox("Show README", value=False)
+    
+    if show_readme:
+        # If user selects Show README, display the README file
+        readme_content = load_readme(readme_path)
+        st.markdown(readme_content)
+    else:
+        # Otherwise, display the main app
+        quiz = PLTeamQuiz()
