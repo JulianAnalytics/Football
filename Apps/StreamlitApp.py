@@ -11,25 +11,44 @@ class PLTeamQuiz:
             page_icon="⚽",
             layout="wide"
         )
+        self.add_meta_tags()
         self.load_data()
         self.initialize_session_state()
         self.create_ui()
     
-    def load_readme(self):
-        """Load README from the Apps folder and display it."""
+    def add_meta_tags(self):
+        """Add meta tags for Open Graph and Twitter Cards for link previews."""
+        # Assuming your app is hosted on a platform (like Streamlit sharing or similar)
+        app_url = "https://your-app-link-here.com"  # Replace with your actual app URL
+        readme_path = "Apps/README.md"
+        
+        # Load the README file content to use as a preview
         try:
-            # Path to the README file in the Apps folder
-            readme_path = "Apps/README.md"
-            
             with open(readme_path, 'r', encoding='utf-8') as file:
                 readme_content = file.read()
-                
-            # Display the content using Streamlit's markdown rendering
-            st.markdown(readme_content)
+            # Taking the first 200 characters of the README as the description
+            description = readme_content[:200] + "..."
         except FileNotFoundError:
-            st.error("README.md file not found in the Apps folder.")
-        except Exception as e:
-            st.error(f"Error loading README file: {str(e)}")
+            description = "Premier League Team Connection Quiz - Can you guess the players who have played for both teams?"
+        
+        # Add Open Graph meta tags
+        meta_tags = f"""
+        <meta property="og:title" content="Premier League Team Connection Quiz" />
+        <meta property="og:description" content="{description}" />
+        <meta property="og:image" content="https://your-image-url.com" />
+        <meta property="og:url" content="{app_url}" />
+        <meta property="og:type" content="website" />
+        
+        <!-- Twitter Card meta tags -->
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Premier League Team Connection Quiz" />
+        <meta name="twitter:description" content="{description}" />
+        <meta name="twitter:image" content="https://your-image-url.com" />
+        <meta name="twitter:url" content="{app_url}" />
+        """
+        
+        # Injecting the HTML meta tags into Streamlit for link preview (using unsafe_allow_html=True)
+        st.markdown(meta_tags, unsafe_allow_html=True)
     
     def load_data(self):
         """Load player data from CSV."""
@@ -74,10 +93,6 @@ class PLTeamQuiz:
     def create_ui(self):
         """Create the Streamlit user interface."""
         st.title("⚽ Premier League Team Connection Quiz")
-        
-        # Load and display the README.md file from the Apps folder
-        self.load_readme()
-        
         st.markdown("""
         ### How to Play:
         1. Select two different Premier League teams
