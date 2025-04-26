@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import requests
 from io import StringIO
+import unicodedata
 
 class PLTeamQuiz:
     def __init__(self):
@@ -49,6 +50,11 @@ class PLTeamQuiz:
         team = team.lower()
         return set(self.df[self.df['Squad'] == team]['Player'].unique())
     
+    def normalize_string(self, text):
+        """Normalize a string by removing accents."""
+        # Normalize the string and remove accents (NFD: Normalization Form Decomposed)
+        return ''.join(c for c in unicodedata.normalize('NFD', text) if unicodedata.category(c) != 'Mn')
+    
     def create_ui(self):
         """Create the Streamlit user interface."""
         st.title("⚽ Premier League Team Connection Quiz")
@@ -80,12 +86,12 @@ class PLTeamQuiz:
     
     def find_connections(self, team1, team2):
         """Find players who played for both teams."""
-        # Convert team names to lowercase for comparison
-        team1_lower = team1.lower()
-        team2_lower = team2.lower()
+        # Normalize team names to handle case-insensitive and accent-insensitive comparison
+        team1_normalized = self.normalize_string(team1.lower())
+        team2_normalized = self.normalize_string(team2.lower())
         
-        team1_players = self.find_players_for_team(team1_lower)
-        team2_players = self.find_players_for_team(team2_lower)
+        team1_players = self.find_players_for_team(team1_normalized)
+        team2_players = self.find_players_for_team(team2_normalized)
         
         st.session_state.common_players = sorted(list(team1_players & team2_players))
         st.session_state.guesses = []
@@ -106,10 +112,11 @@ class PLTeamQuiz:
         with col2:
             if st.button("Submit Guess", type="primary"):
                 if guess:
-                    guess_lower = guess.strip().lower()  # Normalize guess to lowercase
-                    if guess_lower not in [g.lower() for g in st.session_state.guesses]:  # Compare case-insensitively
+                    # Normalize guess to lowercase and remove accents
+                    guess_normalized = self.normalize_string(guess.strip().lower())
+                    if guess_normalized not in [self.normalize_string(g.lower()) for g in st.session_state.guesses]:  # Compare case-insensitively
                         st.session_state.guesses.append(guess)
-                        if guess_lower in [p.lower() for p in st.session_state.common_players]:  # Compare case-insensitively
+                        if guess_normalized in [self.normalize_string(p.lower()) for p in st.session_state.common_players]:  # Compare case-insensitively
                             st.session_state.correct_count += 1
         
         with col3:
@@ -126,9 +133,9 @@ class PLTeamQuiz:
     
     def show_results(self):
         """Show the results of the user's guesses."""
-        correct_guesses = set([g.lower() for g in st.session_state.guesses]) & set([p.lower() for p in st.session_state.common_players])
-        incorrect_guesses = set([g.lower() for g in st.session_state.guesses]) - set([p.lower() for p in st.session_state.common_players])
-        remaining = set([p.lower() for p in st.session_state.common_players]) - correct_guesses
+        correct_guesses = set([self.normalize_string(g.lower()) for g in st.session_state.guesses]) & set([self.normalize_string(p.lower()) for p in st.session_state.common_players])
+        incorrect_guesses = set([self.normalize_string(g.lower()) for g in st.session_state.guesses]) - set([self.normalize_string(p.lower()) for p in st.session_state.common_players])
+        remaining = set([self.normalize_string(p.lower()) for p in st.session_state.common_players]) - correct_guesses
         
         # Create a progress bar
         progress = len(correct_guesses) / len(st.session_state.common_players)
@@ -146,8 +153,8 @@ class PLTeamQuiz:
         # Show guesses with emojis
         st.write("### Your Guesses")
         for guess in st.session_state.guesses:
-            guess_lower = guess.lower()
-            if guess_lower in correct_guesses:
+            guess_normalized = self.normalize_string(guess.lower())
+            if guess_normalized in correct_guesses:
                 st.success(f"✅ {guess}")
             else:
                 st.error(f"❌ {guess}")
