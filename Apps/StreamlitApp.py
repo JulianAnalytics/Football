@@ -19,7 +19,7 @@ readme_path = "Apps/README.md"  # Ensure this path is correct
 readme_content = load_readme(readme_path)
 
 # Inject Open Graph meta tags for link preview (description) when shared
-st.markdown(f""
+st.markdown(f"""
     <meta property="og:title" content="Premier League Team Connection Quiz" />
     <meta property="og:description" content="{readme_content[:300]}..." />
     <meta property="og:image" content="https://example.com/your-image.jpg" />  <!-- Optionally, you can add an image -->
@@ -186,3 +186,4 @@ class PLTeamQuiz:
 # Main logic to start the quiz app
 if __name__ == "__main__":
     quiz = PLTeamQuiz()
+
