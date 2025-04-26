@@ -3,6 +3,31 @@ import pandas as pd
 import requests
 from io import StringIO
 import unicodedata
+import os
+
+def load_readme(file_path):
+    """Load and display the content of a README file."""
+    try:
+        with open(file_path, 'r', encoding='utf-8') as file:
+            return file.read()
+    except FileNotFoundError:
+        return f"README file not found at {file_path}."
+    except Exception as e:
+        return f"Error loading README: {str(e)}"
+
+# Path to the README file inside your specific folder
+readme_path = "Apps/README.md"
+
+# Load the README content
+readme_content = load_readme(readme_path)
+
+# Display the README in the Streamlit app
+st.markdown(readme_content)
+
+# Your other app code goes here...
+
+
+
 
 class PLTeamQuiz:
     def __init__(self):
