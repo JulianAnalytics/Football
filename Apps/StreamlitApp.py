@@ -25,7 +25,7 @@ st.markdown(f""
     <meta property="og:image" content="https://example.com/your-image.jpg" />  <!-- Optionally, you can add an image -->
     <meta property="og:url" content="https://your-streamlit-app-link.com" />
     <meta name="twitter:card" content="summary_large_image" />
-"", unsafe_allow_html=True)
+""", unsafe_allow_html=True)
 
 # Create the main app (the quiz app)
 class PLTeamQuiz:
