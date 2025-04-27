@@ -16,19 +16,21 @@ class PLTeamQuiz:
         self.create_ui()
 
     def apply_custom_style(self):
-        """Apply custom font and background color."""
+        """Apply custom font and background gradient."""
         st.markdown("""
             <style>
-                @import url('https://fonts.googleapis.com/css2?family=Rockwell&display=swap');
-
                 html, body, [class*="css"] {
-                    font-family: 'Rockwell', serif;
-                    background-color: #b0c4de;  /* LightSteelBlue (blue-grey smooth tone) */
+                    font-family: Rockwell, 'Serifa', Georgia, serif;
+                    background: linear-gradient(135deg, #b0c4de, #ccd9e8);  /* Blue-grey gradient */
                     color: #000000;
                 }
 
                 .stButton>button, .stSelectbox, .stTextInput, .stMetric, .stMarkdown, .stProgress, .stError, .stSuccess, .stInfo {
-                    font-family: 'Rockwell', serif;
+                    font-family: Rockwell, 'Serifa', Georgia, serif;
+                }
+
+                input, .stSelectbox, textarea {
+                    background-color: rgba(255, 255, 255, 0.85);
                 }
             </style>
         """, unsafe_allow_html=True)
