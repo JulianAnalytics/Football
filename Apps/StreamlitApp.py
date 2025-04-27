@@ -69,14 +69,13 @@ class PLTeamQuiz:
     def create_ui(self):
         self.apply_custom_style()
 
-        # Create a row with two columns: one for the lion image and one for the title
-        col1, col2 = st.columns([1, 6])  # Adjusted column width to reduce space
-
-        with col1:
-            st.image("Apps/lion.png", width=50)  # Adjusted size of the lion logo
-
-        with col2:
-            st.title("Premier League Squad Connections Quiz")  # Title next to the logo
+        # Using HTML to put the logo close to the title
+        st.markdown("""
+            <h1 style="display: flex; align-items: center; font-size: 36px;">
+                <img src="Apps/lion.png" width="40" style="margin-right: 10px;"> 
+                Premier League Squad Connections Quiz
+            </h1>
+        """, unsafe_allow_html=True)
         
         st.markdown("""
         ### How to Play:
