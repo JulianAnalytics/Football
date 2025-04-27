@@ -1,6 +1,6 @@
 <h3>My collection of football-related data models and visualisations:<h6>
 
-⚽ A quiz game that challenges your knowledge of Premier League players. You can play it as a web application here: [Premier League Squad Game](https://premier-league-squad-game.streamlit.app/)
+⚽ A game that challenges your knowledge of European football. You can play it as a web application here: [Players in Common Challenge](https://players-in-common.streamlit.app/)
 
 ⚽ Several machine learning projects predicting match outcomes, FIFA rankings, and goals using models such as linear regression, random forest, and XGBoost
 
@@ -11,3 +11,6 @@
 ⚽ Visualisations including match dashboards and passing networks
 
 ⚽ Shotmap in R which illustrates the outcome of all of Mo Salah´s 2019/20 shots
+
+
+https://players-in-common.streamlit.app/
