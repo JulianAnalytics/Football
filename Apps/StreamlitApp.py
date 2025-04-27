@@ -70,7 +70,7 @@ class PLTeamQuiz:
         self.apply_custom_style()
 
         # Create a row with two columns: one for the lion image and one for the title
-        col1, col2 = st.columns([1, 5])  # Adjust column widths to make room for the logo
+        col1, col2 = st.columns([1, 2])  # Adjust column widths to make room for the logo
 
         with col1:
             st.image("Apps/lion.png", width=100)  # Adjusted width for smaller logo
