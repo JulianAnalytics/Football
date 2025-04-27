@@ -54,16 +54,16 @@ class EuroQuiz:
         return ''.join(c for c in unicodedata.normalize('NFD', text) if unicodedata.category(c) != 'Mn')
 
     def create_ui(self):
-        # Display five Premier League logos side by side
+        # Display five different league logos side by side, using imgur links
         st.markdown("""
             <div style="text-align: center;">
                 <img src="https://upload.wikimedia.org/wikipedia/en/f/f2/Premier_League_Logo.svg" width="100" style="margin: 10px;">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/4/4c/Bundesliga_logo_2017.svg" width="100" style="margin: 10px;">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/5/5b/Serie_A_logo_2022.svg" width="100" style="margin: 10px;">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/a/a3/La_Liga_EA_Sports_2023_Vertical_Logo.svg" width="100" style="margin: 10px;">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/e/ec/Ligue_1_2024.svg" width="100" style="margin: 10px;">
+                <img src="https://i.imgur.com/K2B5vRr.png" width="100" style="margin: 10px;"> <!-- Bundesliga Logo -->
+                <img src="https://i.imgur.com/Kpx2FiY.png" width="100" style="margin: 10px;"> <!-- Serie A Logo -->
+                <img src="https://i.imgur.com/dfQZBdF.png" width="100" style="margin: 10px;"> <!-- La Liga Logo -->
+                <img src="https://i.imgur.com/ZJYr6pP.png" width="100" style="margin: 10px;"> <!-- Ligue 1 Logo -->
             </div>
-            <h1 style="text-align: center;">⚽️ Squad Connections Quiz</h1>
+        <h1 style="text-align: center;">⚽️ Squad Connections Quiz</h1>
         """, unsafe_allow_html=True)
 
         st.markdown("""
