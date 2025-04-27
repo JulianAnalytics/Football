@@ -76,7 +76,7 @@ class PLTeamQuiz:
                 Premier League Squad Connections Quiz
             </h1>
         """, unsafe_allow_html=True)
-        
+
         st.markdown("""
         ### How to Play:
         1. Select two different Premier League teams  
