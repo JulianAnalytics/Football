@@ -69,10 +69,10 @@ class PLTeamQuiz:
     def create_ui(self):
         self.apply_custom_style()
 
-        # Use HTML to place the logo close to the title
+        # Use an inline block for the image and title to ensure they appear next to each other
         st.markdown("""
         <h1 style="display: inline-block;">
-            <img src="Apps/lion.png" width="50" style="vertical-align: middle; margin-right: 10px;">
+            <img src="lion.png" width="50" style="vertical-align: middle; margin-right: 10px;">
             Premier League Squad Connections Quiz
         </h1>
         """, unsafe_allow_html=True)
@@ -169,4 +169,3 @@ class PLTeamQuiz:
 
 if __name__ == "__main__":
     quiz = PLTeamQuiz()
-
