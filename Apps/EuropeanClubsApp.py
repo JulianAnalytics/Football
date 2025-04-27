@@ -111,8 +111,7 @@ class EuroQuiz:
         team1_display = self.team_map.get(team1_norm, team1_norm.title())
         team2_display = self.team_map.get(team2_norm, team2_norm.title())
 
-        st.info(f"🎯 Find players who have played for both {team1_display} and {team2_display}")
-        st.info(f"🔍 Number of players to find: {len(st.session_state.common_players)}")
+        st.info(f"🎯 Find {len(st.session_state.common_players)} players who have played for both {team1_display} and {team2_display}")
 
     def show_quiz_interface(self):
         col1, col2, col3 = st.columns([2, 1, 1])
