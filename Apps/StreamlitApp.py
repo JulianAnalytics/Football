@@ -73,7 +73,7 @@ class PLTeamQuiz:
         st.markdown("""
         <h1 style="display: inline-block;">
             <img src="https://upload.wikimedia.org/wikipedia/en/f/f2/Premier_League_Logo.svg" width="150" style="vertical-align: middle; margin-right: 10px;">
-            Premier League Squad Connections Quiz
+            Squad Connections Quiz
         </h1>
         """, unsafe_allow_html=True)
 
