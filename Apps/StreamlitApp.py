@@ -8,7 +8,7 @@ class PLTeamQuiz:
     def __init__(self):
         st.set_page_config(
             page_title="Premier League Squad Connections Quiz",
-            page_icon="https://upload.wikimedia.org/wikipedia/en/f/f2/Premier_League_Logo.svg",
+            page_icon="https://upload.wikimedia.org/wikipedia/commons/e/e0/Premier_League_Lion_Logo.svg",
             layout="wide"
         )
         self.load_data()
@@ -69,11 +69,11 @@ class PLTeamQuiz:
     def create_ui(self):
         self.apply_custom_style()
 
-        # 🏆 Title with larger Premier League logo
+        # 🦁 Title with larger Premier League lion logo (120px size)
         st.markdown("""
             <div style='display: flex; align-items: center; gap: 15px; margin-bottom: 1rem;'>
-                <img src='https://upload.wikimedia.org/wikipedia/en/f/f2/Premier_League_Logo.svg' width='150'>
-                <h1 style='margin: 0;'>Squad Connections Quiz</h1>
+                <img src='https://upload.wikimedia.org/wikipedia/commons/e/e0/Premier_League_Lion_Logo.svg' width='120'>
+                <h1 style='margin: 0;'>Premier League Squad Connections Quiz</h1>
             </div>
         """, unsafe_allow_html=True)
 
