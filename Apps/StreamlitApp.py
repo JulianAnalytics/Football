@@ -3,18 +3,15 @@ import pandas as pd
 import requests
 from io import StringIO
 import unicodedata
-import os
 
 class PLTeamQuiz:
     def __init__(self):
-        # Streamlit page configuration
         st.set_page_config(
             page_title="Premier League Squad Connections Quiz",
-            page_icon="https://upload.wikimedia.org/wikipedia/en/f/f2/Premier_League_Logo.svg",  # Premier League logo
+            page_icon="https://upload.wikimedia.org/wikipedia/en/f/f2/Premier_League_Logo.svg",  # Keep the Premier League logo as page icon
             layout="wide"
         )
         self.load_data()
-        self.load_readme()
         self.initialize_session_state()
         self.create_ui()
 
@@ -35,15 +32,6 @@ class PLTeamQuiz:
         except Exception as e:
             st.error(f"Error loading data: {str(e)}")
             st.stop()
-
-    def load_readme(self):
-        """Load the README file from the Apps/ directory."""
-        readme_path = os.path.join("Apps", "README.md")
-        if os.path.exists(readme_path):
-            with open(readme_path, "r") as file:
-                self.readme_content = file.read()
-        else:
-            self.readme_content = "No README file found in the Apps/ directory."
 
     def initialize_session_state(self):
         """Initialize session state variables."""
@@ -77,7 +65,6 @@ class PLTeamQuiz:
             <h1 style="text-align: center;">Squad Connections Quiz</h1>
         """, unsafe_allow_html=True)
 
-        # Display the instructions
         st.markdown("""
         ### How to Play:
         1. Select two different Premier League teams
@@ -85,10 +72,6 @@ class PLTeamQuiz:
         3. Get points for correct guesses!
         """)
 
-        # Display the README content
-        st.markdown(self.readme_content)
-
-        # Select teams for the quiz
         col1, col2 = st.columns(2)
 
         with col1:
