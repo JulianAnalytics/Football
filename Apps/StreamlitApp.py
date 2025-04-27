@@ -69,8 +69,8 @@ class PLTeamQuiz:
     def create_ui(self):
         self.apply_custom_style()
 
-        # Lion logo at the top (replace the path with the correct one if needed)
-        st.image("lion.png", width=200)  # Ensure this path is correct
+        # 🦁 Premier League lion logo at the top
+        st.image("Apps/lion.png", width=400)  # Updated image path
 
         st.title("Premier League Squad Connections Quiz")
         st.markdown("""
