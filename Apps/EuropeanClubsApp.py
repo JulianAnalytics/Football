@@ -7,8 +7,8 @@ import unicodedata
 class EuroQuiz:
     def __init__(self):
         st.set_page_config(
-            page_title="European Squads Quiz",
-            page_icon="https://upload.wikimedia.org/wikipedia/en/f/f2/Premier_League_Logo.svg",
+            page_title="Squad Connections Quiz",
+            page_icon="https://upload.wikimedia.org/wikipedia/en/6/6e/Premier_League_Logo.png",
             layout="wide"
         )
         self.load_data()
@@ -52,25 +52,22 @@ class EuroQuiz:
     def create_ui(self):
         """Create the Streamlit user interface."""
 
-        # Add five league logos at the top
+        # Display league logos
         st.markdown("""
         <div style="text-align: center; margin-bottom: 20px;">
-            <img src="https://upload.wikimedia.org/wikipedia/en/f/f2/Premier_League_Logo.svg" alt="Premier League" width="80" style="margin: 0 10px;">
-            <img src="https://upload.wikimedia.org/wikipedia/en/9/92/La_Liga_logo_%282023%29.svg" alt="La Liga" width="80" style="margin: 0 10px;">
-            <img src="https://upload.wikimedia.org/wikipedia/en/e/e1/Serie_A_logo_%282019%29.svg" alt="Serie A" width="80" style="margin: 0 10px;">
-            <img src="https://upload.wikimedia.org/wikipedia/commons/d/df/Bundesliga_logo_%282017%29.svg" alt="Bundesliga" width="80" style="margin: 0 10px;">
-            <img src="https://upload.wikimedia.org/wikipedia/en/c/c7/Ligue1.svg" alt="Ligue 1" width="80" style="margin: 0 10px;">
+            <img src="https://upload.wikimedia.org/wikipedia/en/6/6e/Premier_League_Logo.png" width="80" style="margin: 0 10px;">
+            <img src="https://upload.wikimedia.org/wikipedia/en/thumb/9/92/La_Liga_logo_%282023%29.svg/200px-La_Liga_logo_%282023%29.svg.png" width="80" style="margin: 0 10px;">
+            <img src="https://upload.wikimedia.org/wikipedia/en/thumb/e/e1/Serie_A_logo_%282019%29.svg/200px-Serie_A_logo_%282019%29.svg.png" width="80" style="margin: 0 10px;">
+            <img src="https://upload.wikimedia.org/wikipedia/en/thumb/d/df/Bundesliga_logo_%282017%29.svg/200px-Bundesliga_logo_%282017%29.svg.png" width="80" style="margin: 0 10px;">
+            <img src="https://upload.wikimedia.org/wikipedia/en/thumb/c/c7/Ligue1.svg/200px-Ligue1.svg.png" width="80" style="margin: 0 10px;">
         </div>
         """, unsafe_allow_html=True)
 
-        # Quiz title
-        st.markdown("""
-        <h1 style="text-align: center;">European Squad Connections Quiz</h1>
-        """, unsafe_allow_html=True)
+        st.markdown("<h1 style='text-align: center;'>Squad Connections Quiz</h1>", unsafe_allow_html=True)
 
         st.markdown("""
         ### How to Play:
-        1. Select two different teams from Europe's top leagues
+        1. Select two different European teams
         2. Guess players who have played for both teams
         3. Get points for correct guesses!
         """)
@@ -142,7 +139,7 @@ class EuroQuiz:
         incorrect_guesses = set([self.normalize_string(g.lower()) for g in st.session_state.guesses]) - set([self.normalize_string(p.lower()) for p in st.session_state.common_players])
         remaining = set([self.normalize_string(p.lower()) for p in st.session_state.common_players]) - correct_guesses
 
-        progress = len(correct_guesses) / len(st.session_state.common_players)
+        progress = len(correct_guesses) / len(st.session_state.common_players) if st.session_state.common_players else 0
         st.progress(progress)
 
         col1, col2, col3 = st.columns(3)
@@ -162,4 +159,5 @@ class EuroQuiz:
                 st.error(f"❌ {guess}")
 
 if __name__ == "__main__":
-    quiz = EuroQuiz()
+    EuroQuiz()
+
