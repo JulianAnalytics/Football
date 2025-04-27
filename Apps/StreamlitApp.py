@@ -25,31 +25,12 @@ class PLTeamQuiz:
                     color: #000000;
                 }
 
-                /* Ensure all Streamlit widgets use the same font and background on all devices */
                 .stButton>button, .stSelectbox, .stTextInput, .stMetric, .stMarkdown, .stProgress, .stError, .stSuccess, .stInfo {
                     font-family: Rockwell, 'Serifa', Georgia, serif;
-                    background-color: rgba(255, 255, 255, 0.85);
                 }
 
                 input, .stSelectbox, textarea {
                     background-color: rgba(255, 255, 255, 0.85);
-                }
-
-                /* Style the selectboxes consistently */
-                .stSelectbox div {
-                    padding: 10px;
-                }
-
-                /* Ensure mobile compatibility */
-                @media screen and (max-width: 600px) {
-                    .stSelectbox {
-                        font-size: 16px;
-                        padding: 10px;
-                    }
-
-                    .stTextInput input, .stSelectbox div {
-                        font-size: 16px;
-                    }
                 }
             </style>
         """, unsafe_allow_html=True)
@@ -88,15 +69,13 @@ class PLTeamQuiz:
     def create_ui(self):
         self.apply_custom_style()
 
-        # Place the logo above the title
+        # Use HTML to place the logo close to the title
         st.markdown("""
-        <div style="text-align: center;">
-            <img src="https://upload.wikimedia.org/wikipedia/en/f/f2/Premier_League_Logo.svg" width="100" style="vertical-align: middle; margin-bottom: 10px;">
-        </div>
+        <h1 style="display: inline-block;">
+            <img src="https://upload.wikimedia.org/wikipedia/en/f/f2/Premier_League_Logo.svg" width="50" style="vertical-align: middle; margin-right: 10px;">
+            Premier League Squad Connections Quiz
+        </h1>
         """, unsafe_allow_html=True)
-
-        # Title of the quiz
-        st.markdown("<h1 style='text-align: center;'>Squad Connections Quiz</h1>", unsafe_allow_html=True)
 
         st.markdown("""
         ### How to Play:
