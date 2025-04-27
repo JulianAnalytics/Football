@@ -105,7 +105,15 @@ class EuroQuiz:
         team1_players = self.find_players_for_team(team1_norm)
         team2_players = self.find_players_for_team(team2_norm)
 
-        common = team1_players & team2_players
+        # Find common players and ensure they are the same player with the same year of birth
+        common = set()
+
+        for player1, year1 in team1_players:
+            for player2, year2 in team2_players:
+                # Check if the player names match and the birth years are the same
+                if fuzz.token_set_ratio(self.normalize_string(player1.lower()), self.normalize_string(player2.lower())) >= 90 and year1 == year2:
+                    common.add((player1, year1))
+
         st.session_state.common_raw = common
         st.session_state.common_players = sorted([p for p, y in common if pd.notna(y)])
 
