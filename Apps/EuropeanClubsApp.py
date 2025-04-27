@@ -33,16 +33,6 @@ class EuroQuiz:
             self.team_map = dict(zip(self.df['Squad_normalized'], self.df['Squad']))
             self.all_teams = sorted(self.team_map.keys())
 
-            # Add a column for country flags (e.g., for Germany, Spain, France)
-            # For now, we will manually map some of the teams to their respective countries.
-            self.team_countries = {
-                "Germany": "https://flagcdn.com/w320/de.png",  # Germany flag URL
-                "Spain": "https://flagcdn.com/w320/es.png",  # Spain flag URL
-                "France": "https://flagcdn.com/w320/fr.png",  # France flag URL
-                "Italy": "https://flagcdn.com/w320/it.png",  # Italy flag URL
-                "England": "https://flagcdn.com/w320/gb.png",  # England flag URL
-            }
-
         except Exception as e:
             st.error(f"Error loading data: {str(e)}")
             st.stop()
@@ -64,6 +54,7 @@ class EuroQuiz:
         return ''.join(c for c in unicodedata.normalize('NFD', text) if unicodedata.category(c) != 'Mn')
 
     def create_ui(self):
+        # Removed the logos here, no images inserted
         st.markdown("""
             <h1 style="text-align: center;">⚽️ Squad Connections Quiz</h1>
         """, unsafe_allow_html=True)
@@ -78,9 +69,9 @@ class EuroQuiz:
         col1, col2 = st.columns(2)
 
         with col1:
-            team1_display = st.selectbox("Select First Team:", [self.get_team_with_flag(t) for t in self.all_teams], key='team1')
+            team1_display = st.selectbox("Select First Team:", [self.team_map[t] for t in self.all_teams], key='team1')
         with col2:
-            team2_display = st.selectbox("Select Second Team:", [self.get_team_with_flag(t) for t in self.all_teams], key='team2')
+            team2_display = st.selectbox("Select Second Team:", [self.team_map[t] for t in self.all_teams], key='team2')
 
         team1_normalized = self.get_normalized_team_name(team1_display)
         team2_normalized = self.get_normalized_team_name(team2_display)
@@ -99,29 +90,6 @@ class EuroQuiz:
             if disp == team_display_name:
                 return norm
         return team_display_name.casefold()
-
-    def get_team_with_flag(self, team_normalized):
-        """Get team name with flag icon."""
-        team_name = self.team_map.get(team_normalized, team_normalized.title())
-        country = self.get_country_from_team(team_name)
-        flag_url = self.team_countries.get(country, None)
-        flag_html = f'<img src="{flag_url}" width="30" style="vertical-align: middle;">' if flag_url else ''
-        return f"{flag_html} {team_name}"
-
-    def get_country_from_team(self, team_name):
-        """Map team to its country (this is a simple example, adjust as needed)."""
-        if "Bayern" in team_name or "Borussia" in team_name:  # For teams in Germany
-            return "Germany"
-        elif "Barcelona" in team_name or "Real Madrid" in team_name:  # For teams in Spain
-            return "Spain"
-        elif "Paris" in team_name or "Marseille" in team_name:  # For teams in France
-            return "France"
-        elif "Juventus" in team_name or "AC Milan" in team_name:  # For teams in Italy
-            return "Italy"
-        elif "Manchester" in team_name or "Liverpool" in team_name:  # For teams in England
-            return "England"
-        else:
-            return "Unknown"
 
     def find_connections(self, team1_norm, team2_norm):
         team1_players = self.find_players_for_team(team1_norm)
