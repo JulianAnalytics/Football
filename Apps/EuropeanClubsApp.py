@@ -54,17 +54,18 @@ class EuroQuiz:
         return ''.join(c for c in unicodedata.normalize('NFD', text) if unicodedata.category(c) != 'Mn')
 
     def create_ui(self):
-        # Display five different league logos side by side, using imgur links
+        # Display five different league logos side by side, using Cloudinary links
         st.markdown("""
             <div style="text-align: center;">
                 <img src="https://upload.wikimedia.org/wikipedia/en/f/f2/Premier_League_Logo.svg" width="100" style="margin: 10px;">
-                <img src="https://i.imgur.com/K2B5vRr.png" width="100" style="margin: 10px;"> <!-- Bundesliga Logo -->
-                <img src="https://i.imgur.com/Kpx2FiY.png" width="100" style="margin: 10px;"> <!-- Serie A Logo -->
-                <img src="https://i.imgur.com/dfQZBdF.png" width="100" style="margin: 10px;"> <!-- La Liga Logo -->
-                <img src="https://i.imgur.com/ZJYr6pP.png" width="100" style="margin: 10px;"> <!-- Ligue 1 Logo -->
+                <img src="https://res.cloudinary.com/dfj9j9eji/image/upload/v1682391180/bundesliga_logo_2017_x7ixmm.png" width="100" style="margin: 10px;"> <!-- Bundesliga Logo -->
+                <img src="https://res.cloudinary.com/dfj9j9eji/image/upload/v1682391191/serie_a_logo_2022_rzabf5.png" width="100" style="margin: 10px;"> <!-- Serie A Logo -->
+                <img src="https://res.cloudinary.com/dfj9j9eji/image/upload/v1682391196/la_liga_logo_2023_qkso6g.png" width="100" style="margin: 10px;"> <!-- La Liga Logo -->
+                <img src="https://res.cloudinary.com/dfj9j9eji/image/upload/v1682391201/ligue_1_logo_2024_tso1zx.png" width="100" style="margin: 10px;"> <!-- Ligue 1 Logo -->
             </div>
-        <h1 style="text-align: center;">⚽️ Squad Connections Quiz</h1>
+            <h1 style="text-align: center;">⚽️ Squad Connections Quiz</h1>
         """, unsafe_allow_html=True)
+
 
         st.markdown("""
         ### How to Play:
