@@ -28,8 +28,9 @@ class EuroQuiz:
             self.df['Squad'] = self.df['Squad'].astype(str).str.strip()
             self.df['Squad_normalized'] = self.df['Squad'].str.casefold()
 
-            # Extract birth year
+            # Extract birth year and ensure it is an integer
             self.df['YearBorn'] = pd.to_datetime(self.df['Born'], errors='coerce').dt.year
+            self.df['YearBorn'] = self.df['YearBorn'].astype('Int64')  # Convert to integer type, handling NaT (missing dates)
 
             self.team_map = dict(zip(self.df['Squad_normalized'], self.df['Squad']))
             self.all_teams = sorted(self.team_map.keys())
@@ -202,4 +203,3 @@ class EuroQuiz:
 
 if __name__ == "__main__":
     quiz = EuroQuiz()
-
