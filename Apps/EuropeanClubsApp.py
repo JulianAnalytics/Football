@@ -43,8 +43,6 @@ class EuroQuiz:
     def initialize_session_state(self):
         if 'common_players' not in st.session_state:
             st.session_state.common_players = []
-        if 'raw_common_set' not in st.session_state:
-            st.session_state.raw_common_set = set()
         if 'guesses' not in st.session_state:
             st.session_state.guesses = []
         if 'show_answers' not in st.session_state:
@@ -60,7 +58,6 @@ class EuroQuiz:
         return ''.join(c for c in unicodedata.normalize('NFD', text) if unicodedata.category(c) != 'Mn')
 
     def create_ui(self):
-        # Display league logos
         st.markdown("""
             <div style="text-align: center;">
                 <img src="https://upload.wikimedia.org/wikipedia/en/f/f2/Premier_League_Logo.svg" width="160" style="margin: 10px;">
@@ -109,8 +106,8 @@ class EuroQuiz:
         team2_players = self.find_players_for_team(team2_norm)
 
         common = team1_players & team2_players
-        st.session_state.common_players = sorted([name for name, year in common if pd.notna(year)])
-        st.session_state.raw_common_set = set(common)
+        st.session_state.common_players = sorted([player for player, year in common if pd.notna(year)])
+        st.session_state.common_raw = common  # Save raw pairs for internal checking
 
         st.session_state.guesses = []
         st.session_state.show_answers = False
@@ -131,9 +128,10 @@ class EuroQuiz:
             if st.button("Submit Guess", type="primary"):
                 if guess:
                     guess_normalized = self.normalize_string(guess.strip().lower())
-                    if guess_normalized not in [self.normalize_string(g.lower()) for g in st.session_state.guesses]:
+                    guessed_before = [self.normalize_string(g.lower()) for g in st.session_state.guesses]
+                    if guess_normalized not in guessed_before:
                         st.session_state.guesses.append(guess)
-                        if any(self.normalize_string(name.lower()) == guess_normalized for name, _ in st.session_state.raw_common_set):
+                        if any(self.normalize_string(name.lower()) == guess_normalized for name, _ in st.session_state.common_raw):
                             st.session_state.correct_count += 1
 
         with col3:
@@ -149,12 +147,14 @@ class EuroQuiz:
                 st.write(f"• {player}")
 
     def show_results(self):
-        correct_guesses = set([self.normalize_string(g.lower()) for g in st.session_state.guesses]) & \
-                          set([self.normalize_string(name.lower()) for name, _ in st.session_state.raw_common_set])
-        incorrect_guesses = set([self.normalize_string(g.lower()) for g in st.session_state.guesses]) - correct_guesses
-        remaining = set([self.normalize_string(name.lower()) for name, _ in st.session_state.raw_common_set]) - correct_guesses
+        correct_names = {self.normalize_string(name.lower()) for name, _ in st.session_state.common_raw}
+        guess_names = {self.normalize_string(g.lower()) for g in st.session_state.guesses}
 
-        st.progress(len(correct_guesses) / len(st.session_state.common_players))
+        correct_guesses = guess_names & correct_names
+        incorrect_guesses = guess_names - correct_names
+        remaining = correct_names - correct_guesses
+
+        st.progress(len(correct_guesses) / len(correct_names))
 
         col1, col2, col3 = st.columns(3)
         with col1:
@@ -172,8 +172,6 @@ class EuroQuiz:
             else:
                 st.error(f"❌ {guess}")
 
-
 if __name__ == "__main__":
     quiz = EuroQuiz()
-
 
