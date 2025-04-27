@@ -56,10 +56,10 @@ class EuroQuiz:
     def create_ui(self):
         st.markdown("""
             <div style="text-align: center;">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1c/Bundesliga_Logo_2010.svg/500px-Bundesliga_Logo_2010.svg.png" width="60" style="margin: 0 10px;">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/13/LaLiga.svg/512px-LaLiga.svg.png" width="60" style="margin: 0 10px;">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Ligue1.svg/512px-Ligue1.svg.png" width="60" style="margin: 0 10px;">
-                <img src="https://upload.wikimedia.org/wikipedia/en/thumb/e/e1/Serie_A_logo_2019.svg/512px-Serie_A_logo_2019.svg.png" width="60" style="margin: 0 10px;">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/1/1c/Bundesliga_logo_%282017%29.svg" width="60" style="margin: 0 10px;">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/d/d7/La_Liga_Logo.svg" width="60" style="margin: 0 10px;">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/0/0e/Ligue_1_logo_%282018%29.svg" width="60" style="margin: 0 10px;">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/1/15/Serie_A_logo_2020.svg" width="60" style="margin: 0 10px;">
             </div>
             <h1 style="text-align: center;">⚽️ Squad Connections Quiz</h1>
         """, unsafe_allow_html=True)
@@ -72,6 +72,7 @@ class EuroQuiz:
         """)
 
         col1, col2 = st.columns(2)
+
 
         with col1:
             team1_display = st.selectbox("Select First Team:", [self.team_map[t] for t in self.all_teams], key='team1')
