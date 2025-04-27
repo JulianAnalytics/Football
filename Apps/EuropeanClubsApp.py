@@ -7,7 +7,7 @@ import unicodedata
 class EuroQuiz:
     def __init__(self):
         st.set_page_config(
-            page_title="Squad Connections Quiz",
+            page_title="European Squads Quiz",
             page_icon="https://upload.wikimedia.org/wikipedia/en/f/f2/Premier_League_Logo.svg",
             layout="wide"
         )
@@ -65,7 +65,7 @@ class EuroQuiz:
 
         # Quiz title
         st.markdown("""
-        <h1 style="text-align: center;">Squad Connections Quiz</h1>
+        <h1 style="text-align: center;">European Squad Connections Quiz</h1>
         """, unsafe_allow_html=True)
 
         st.markdown("""
