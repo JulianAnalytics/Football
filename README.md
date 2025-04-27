@@ -1,8 +1,8 @@
 <h3>My collection of football-related data models and visualisations:<h6>
 
-⚽ Three position-specific recruitment models for defined archetypal roles which identify and score players based on technical performance data
+⚽ A quiz game that challenges your knowledge of Premier League players. You can play it here: [Premier League Squad Game](https://premier-league-squad-game.streamlit.app/)
 
-⚽ Two Premier League trivia quizzes
+⚽ Three position-specific recruitment models for defined archetypal roles which identify and score players based on technical performance data
 
 ⚽ Data gathering methods for scraping from FBref.com, Transfermarkt.com and utilising the StatsBomb API
 
