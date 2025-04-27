@@ -58,8 +58,8 @@ class EuroQuiz:
         st.markdown("""
             <div style="text-align: center;">
                 <img src="https://upload.wikimedia.org/wikipedia/en/f/f2/Premier_League_Logo.svg" width="100" style="margin: 10px;">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/0/0f/Serie_A_logo_2022.svg" width="100" style="margin: 10px;">
                 <img src="https://upload.wikimedia.org/wikipedia/commons/4/4c/Bundesliga_logo_2017.svg" width="100" style="margin: 10px;">
+                <img src="https://upload.wikimedia.org/wikipedia/en/f/f2/Premier_League_Logo.svg" width="100" style="margin: 10px;">
                 <img src="https://upload.wikimedia.org/wikipedia/en/f/f2/Premier_League_Logo.svg" width="100" style="margin: 10px;">
                 <img src="https://upload.wikimedia.org/wikipedia/en/f/f2/Premier_League_Logo.svg" width="100" style="margin: 10px;">
             </div>
