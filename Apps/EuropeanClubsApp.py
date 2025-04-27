@@ -57,11 +57,11 @@ class EuroQuiz:
         # Display five different league logos side by side, using Cloudinary links
         st.markdown("""
             <div style="text-align: center;">
-                <img src="https://upload.wikimedia.org/wikipedia/en/f/f2/Premier_League_Logo.svg" width="130" style="margin: 10px;">
+                <img src="https://upload.wikimedia.org/wikipedia/en/f/f2/Premier_League_Logo.svg" width="140" style="margin: 10px;">
                 <img src="https://i.imgur.com/KXe5dTP.png" width="100" style="margin: 10px;">
                 <img src="https://i.imgur.com/L7sTT0i.png" width="100" style="margin: 10px;">
-                <img src="https://i.imgur.com/Ca9NLSb.png" width="85" style="margin: 10px;"> 
-                <img src="https://i.imgur.com/BYKNuEO.png" width="100" style="margin: 10px;"> 
+                <img src="https://i.imgur.com/Ca9NLSb.png" width="75" style="margin: 10px;"> 
+                <img src="https://i.imgur.com/BYKNuEO.png" width="85" style="margin: 10px;"> 
             </div>
             <h1 style="text-align: center;">⚽️ Squad Connections Quiz</h1>
         """, unsafe_allow_html=True)
