@@ -66,7 +66,7 @@ class PLTeamQuiz:
     def normalize_string(self, text):
         return ''.join(c for c in unicodedata.normalize('NFD', text) if unicodedata.category(c) != 'Mn')
 
-        def create_ui(self):
+    def create_ui(self):
         self.apply_custom_style()
 
         # 🏆 Title with larger Premier League logo
@@ -100,7 +100,6 @@ class PLTeamQuiz:
 
         if st.session_state.common_players:
             self.show_quiz_interface()
-
 
     def find_connections(self, team1, team2):
         team1_normalized = self.normalize_string(team1.lower())
