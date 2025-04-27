@@ -54,9 +54,12 @@ class EuroQuiz:
         return ''.join(c for c in unicodedata.normalize('NFD', text) if unicodedata.category(c) != 'Mn')
 
     def create_ui(self):
-        # Removed the logos here, no images inserted
+        # Added the Premier League logo
         st.markdown("""
             <h1 style="text-align: center;">⚽️ Squad Connections Quiz</h1>
+            <div style="text-align: center;">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/0/0f/Premier_League_Logo_2016.svg" width="100" style="margin: 20px;">
+            </div>
         """, unsafe_allow_html=True)
 
         st.markdown("""
