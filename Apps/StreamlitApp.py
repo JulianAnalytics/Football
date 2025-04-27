@@ -70,7 +70,7 @@ class PLTeamQuiz:
         self.apply_custom_style()
 
         # 🦁 Premier League lion logo at the top
-        st.image("Apps/lion.png", width=150)  # Updated image path
+        st.image("Apps/lion.png", width=150)  # Adjusted width for smaller logo
 
         st.title("Premier League Squad Connections Quiz")
         st.markdown("""
