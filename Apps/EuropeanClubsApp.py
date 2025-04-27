@@ -175,3 +175,5 @@ class EuroQuiz:
 if __name__ == "__main__":
     quiz = EuroQuiz()
 
+
+
