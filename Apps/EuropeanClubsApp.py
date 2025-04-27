@@ -8,7 +8,7 @@ class EuroQuiz:
     def __init__(self):
         st.set_page_config(
             page_title="Squad Connections Quiz",
-            page_icon="⚽️",  # Soccer emoji as icon
+            page_icon="⚽️",  # Soccer emoji as the page icon
             layout="wide"
         )
         self.load_data()
@@ -25,9 +25,11 @@ class EuroQuiz:
             csv_string = StringIO(response.text)
             self.df = pd.read_csv(csv_string)
 
-            # Normalize team names
+            # Clean and normalize squad names
             self.df['Squad'] = self.df['Squad'].astype(str).str.strip()
             self.df['Squad_normalized'] = self.df['Squad'].str.casefold()
+
+            # Map normalized name to original name for display
             self.team_map = dict(zip(self.df['Squad_normalized'], self.df['Squad']))
             self.all_teams = sorted(self.team_map.keys())
 
@@ -53,11 +55,11 @@ class EuroQuiz:
 
     def create_ui(self):
         st.markdown("""
-            <div style="text-align: center; margin-bottom: 20px;">
-                <img src="https://upload.wikimedia.org/wikipedia/en/d/df/Bundesliga_logo_%282017%29.svg" width="60" style="margin: 0 10px;">
-                <img src="https://upload.wikimedia.org/wikipedia/en/6/6e/La_Liga_logo_%282023%29.svg" width="60" style="margin: 0 10px;">
-                <img src="https://upload.wikimedia.org/wikipedia/en/c/c7/Ligue1.svg" width="60" style="margin: 0 10px;">
-                <img src="https://upload.wikimedia.org/wikipedia/en/e/e1/Serie_A_logo_2019.svg" width="60" style="margin: 0 10px;">
+            <div style="text-align: center;">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/1c/Bundesliga_Logo_2010.svg/500px-Bundesliga_Logo_2010.svg.png" width="60" style="margin: 0 10px;">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/13/LaLiga.svg/512px-LaLiga.svg.png" width="60" style="margin: 0 10px;">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Ligue1.svg/512px-Ligue1.svg.png" width="60" style="margin: 0 10px;">
+                <img src="https://upload.wikimedia.org/wikipedia/en/thumb/e/e1/Serie_A_logo_2019.svg/512px-Serie_A_logo_2019.svg.png" width="60" style="margin: 0 10px;">
             </div>
             <h1 style="text-align: center;">⚽️ Squad Connections Quiz</h1>
         """, unsafe_allow_html=True)
@@ -161,7 +163,6 @@ class EuroQuiz:
             else:
                 st.error(f"❌ {guess}")
 
+
 if __name__ == "__main__":
     quiz = EuroQuiz()
-
-
