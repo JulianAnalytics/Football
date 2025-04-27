@@ -73,7 +73,6 @@ class EuroQuiz:
 
         col1, col2 = st.columns(2)
 
-
         with col1:
             team1_display = st.selectbox("Select First Team:", [self.team_map[t] for t in self.all_teams], key='team1')
         with col2:
