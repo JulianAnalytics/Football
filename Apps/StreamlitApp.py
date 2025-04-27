@@ -72,7 +72,14 @@ class PLTeamQuiz:
         # 🦁 Premier League logo at the top
         st.image("https://upload.wikimedia.org/wikipedia/en/f/f2/Premier_League_Logo.svg", width=100)
 
-        st.title("⚽ Squad Connections Quiz")
+        # 🏆 Title with inline styling
+        st.markdown("""
+            <div style='display: flex; align-items: center; gap: 10px;'>
+                <img src='https://upload.wikimedia.org/wikipedia/en/f/f2/Premier_League_Logo.svg' width='40'>
+                <h1 style='margin: 0;'>Premier League Squad Connections Quiz</h1>
+            </div>
+        """, unsafe_allow_html=True)
+
         st.markdown("""
         ### How to Play:
         1. Select two different Premier League teams  
@@ -165,4 +172,3 @@ class PLTeamQuiz:
 
 if __name__ == "__main__":
     quiz = PLTeamQuiz()
-
