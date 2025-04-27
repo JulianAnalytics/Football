@@ -3,6 +3,7 @@ import pandas as pd
 import requests
 from io import StringIO
 import unicodedata
+from rapidfuzz import fuzz  # <-- New import for fuzzy matching
 
 class EuroQuiz:
     def __init__(self):
@@ -16,7 +17,6 @@ class EuroQuiz:
         self.create_ui()
 
     def load_data(self):
-        """Load player data from CSV."""
         try:
             url = "https://raw.githubusercontent.com/JulianB22/Football/main/data/final_all_european_players.csv"
             response = requests.get(url)
@@ -25,14 +25,12 @@ class EuroQuiz:
             csv_string = StringIO(response.text)
             self.df = pd.read_csv(csv_string)
 
-            # Clean and normalize squad names
             self.df['Squad'] = self.df['Squad'].astype(str).str.strip()
             self.df['Squad_normalized'] = self.df['Squad'].str.casefold()
 
-            # Extract year from Born column
+            # Extract birth year
             self.df['YearBorn'] = pd.to_datetime(self.df['Born'], errors='coerce').dt.year
 
-            # Map normalized name to original name for display
             self.team_map = dict(zip(self.df['Squad_normalized'], self.df['Squad']))
             self.all_teams = sorted(self.team_map.keys())
 
@@ -43,6 +41,8 @@ class EuroQuiz:
     def initialize_session_state(self):
         if 'common_players' not in st.session_state:
             st.session_state.common_players = []
+        if 'common_raw' not in st.session_state:
+            st.session_state.common_raw = set()
         if 'guesses' not in st.session_state:
             st.session_state.guesses = []
         if 'show_answers' not in st.session_state:
@@ -106,8 +106,8 @@ class EuroQuiz:
         team2_players = self.find_players_for_team(team2_norm)
 
         common = team1_players & team2_players
-        st.session_state.common_players = sorted([player for player, year in common if pd.notna(year)])
-        st.session_state.common_raw = common  # Save raw pairs for internal checking
+        st.session_state.common_raw = common
+        st.session_state.common_players = sorted([p for p, y in common if pd.notna(y)])
 
         st.session_state.guesses = []
         st.session_state.show_answers = False
@@ -128,10 +128,19 @@ class EuroQuiz:
             if st.button("Submit Guess", type="primary"):
                 if guess:
                     guess_normalized = self.normalize_string(guess.strip().lower())
-                    guessed_before = [self.normalize_string(g.lower()) for g in st.session_state.guesses]
-                    if guess_normalized not in guessed_before:
+                    already_guessed = [self.normalize_string(g.lower()) for g in st.session_state.guesses]
+
+                    if guess_normalized not in already_guessed:
                         st.session_state.guesses.append(guess)
-                        if any(self.normalize_string(name.lower()) == guess_normalized for name, _ in st.session_state.common_raw):
+
+                        matched = False
+                        for player, _ in st.session_state.common_raw:
+                            player_norm = self.normalize_string(player.lower())
+                            if fuzz.token_set_ratio(guess_normalized, player_norm) >= 90:
+                                matched = True
+                                break
+
+                        if matched:
                             st.session_state.correct_count += 1
 
         with col3:
@@ -148,13 +157,23 @@ class EuroQuiz:
 
     def show_results(self):
         correct_names = {self.normalize_string(name.lower()) for name, _ in st.session_state.common_raw}
-        guess_names = {self.normalize_string(g.lower()) for g in st.session_state.guesses}
+        guessed = {self.normalize_string(g.lower()): g for g in st.session_state.guesses}
 
-        correct_guesses = guess_names & correct_names
-        incorrect_guesses = guess_names - correct_names
-        remaining = correct_names - correct_guesses
+        correct_guesses = []
+        incorrect_guesses = []
 
-        st.progress(len(correct_guesses) / len(correct_names))
+        for guess_norm, original_guess in guessed.items():
+            match_found = False
+            for name in correct_names:
+                if fuzz.token_set_ratio(guess_norm, name) >= 90:
+                    match_found = True
+                    break
+            if match_found:
+                correct_guesses.append(original_guess)
+            else:
+                incorrect_guesses.append(original_guess)
+
+        st.progress(len(correct_guesses) / len(st.session_state.common_players))
 
         col1, col2, col3 = st.columns(3)
         with col1:
@@ -162,18 +181,17 @@ class EuroQuiz:
         with col2:
             st.metric("❌ Incorrect", len(incorrect_guesses))
         with col3:
-            st.metric("🎯 Remaining", len(remaining))
+            st.metric("🎯 Remaining", len(st.session_state.common_players) - len(correct_guesses))
 
         st.write("### Your Guesses")
         for guess in st.session_state.guesses:
-            guess_normalized = self.normalize_string(guess.lower())
-            if guess_normalized in correct_guesses:
+            if guess in correct_guesses:
                 st.success(f"✅ {guess}")
             else:
                 st.error(f"❌ {guess}")
 
+
 if __name__ == "__main__":
     quiz = EuroQuiz()
-
 
 
