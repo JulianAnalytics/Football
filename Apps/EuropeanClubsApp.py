@@ -111,6 +111,7 @@ class EuroQuiz:
         team1_display = self.team_map.get(team1_norm, team1_norm.title())
         team2_display = self.team_map.get(team2_norm, team2_norm.title())
 
+        # Modified message: single line showing number of common players
         st.info(f"🎯 Find {len(st.session_state.common_players)} players who have played for both {team1_display} and {team2_display}")
 
     def show_quiz_interface(self):
@@ -168,4 +169,3 @@ class EuroQuiz:
 
 if __name__ == "__main__":
     quiz = EuroQuiz()
-
