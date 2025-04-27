@@ -69,13 +69,15 @@ class PLTeamQuiz:
     def create_ui(self):
         self.apply_custom_style()
 
-        # Use HTML to place the logo close to the title
+        # Place the logo above the title
         st.markdown("""
-        <h1 style="display: inline-block;">
-            <img src="https://upload.wikimedia.org/wikipedia/en/f/f2/Premier_League_Logo.svg" width="150" style="vertical-align: middle; margin-right: 10px;">
-            Squad Connections Quiz
-        </h1>
+        <div style="text-align: center;">
+            <img src="https://upload.wikimedia.org/wikipedia/en/f/f2/Premier_League_Logo.svg" width="100" style="vertical-align: middle; margin-bottom: 10px;">
+        </div>
         """, unsafe_allow_html=True)
+
+        # Title of the quiz
+        st.markdown("<h1 style='text-align: center;'>Squad Connections Quiz</h1>", unsafe_allow_html=True)
 
         st.markdown("""
         ### How to Play:
@@ -169,4 +171,3 @@ class PLTeamQuiz:
 
 if __name__ == "__main__":
     quiz = PLTeamQuiz()
-
