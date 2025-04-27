@@ -3,7 +3,7 @@ import pandas as pd
 import requests
 from io import StringIO
 import unicodedata
-from rapidfuzz import fuzz  # <-- New import for fuzzy matching
+from rapidfuzz import fuzz
 
 class EuroQuiz:
     def __init__(self):
@@ -28,7 +28,6 @@ class EuroQuiz:
             self.df['Squad'] = self.df['Squad'].astype(str).str.strip()
             self.df['Squad_normalized'] = self.df['Squad'].str.casefold()
 
-            # Treat the 'Born' column as year and convert to integer if possible
             self.df['YearBorn'] = pd.to_numeric(self.df['Born'], errors='coerce', downcast='integer')
 
             self.team_map = dict(zip(self.df['Squad_normalized'], self.df['Squad']))
@@ -76,7 +75,6 @@ class EuroQuiz:
         3. Get points for correct guesses!
         """)
 
-        # Set default team values and normalize them
         default_team1 = "Arsenal"
         default_team2 = "Barcelona"
         default_team1_normalized = default_team1.casefold()
@@ -111,18 +109,14 @@ class EuroQuiz:
         team1_players = self.find_players_for_team(team1_norm)
         team2_players = self.find_players_for_team(team2_norm)
 
-        # Find common players by checking for exact matches of both player names and birth years
         common = set()
-
         for player1, year1 in team1_players:
             for player2, year2 in team2_players:
-                # Exact match check: player names and birth years
                 if self.normalize_string(player1.lower()) == self.normalize_string(player2.lower()) and year1 == year2:
                     common.add((player1, year1))
 
         st.session_state.common_raw = common
         st.session_state.common_players = sorted([p for p, y in common if pd.notna(y)])
-
         st.session_state.guesses = []
         st.session_state.show_answers = False
         st.session_state.correct_count = 0
@@ -150,8 +144,9 @@ class EuroQuiz:
                         matched = False
                         for player, _ in st.session_state.common_raw:
                             player_norm = self.normalize_string(player.lower())
-                            # Use fuzzy matching only here for user guesses
-                            if fuzz.token_set_ratio(guess_normalized, player_norm) >= 90:
+                            surname = self.normalize_string(player.split()[-1].lower())
+                            if (fuzz.token_set_ratio(guess_normalized, player_norm) >= 90 or
+                                fuzz.token_set_ratio(guess_normalized, surname) >= 90):
                                 matched = True
                                 break
 
@@ -208,3 +203,4 @@ class EuroQuiz:
 
 if __name__ == "__main__":
     quiz = EuroQuiz()
+
