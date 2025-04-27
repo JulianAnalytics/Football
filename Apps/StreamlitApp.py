@@ -7,7 +7,7 @@ import unicodedata
 class PLTeamQuiz:
     def __init__(self):
         st.set_page_config(
-            page_title="Squad Connections Quiz",
+            page_title="Premier League Squad Connections Quiz",
             page_icon="⚽",
             layout="wide"
         )
@@ -72,7 +72,7 @@ class PLTeamQuiz:
         # 🦁 Premier League logo at the top
         st.image("https://upload.wikimedia.org/wikipedia/en/f/f2/Premier_League_Logo.svg", width=100)
 
-        st.title("⚽ Premier League Team Connection Quiz")
+        st.title("⚽ Squad Connections Quiz")
         st.markdown("""
         ### How to Play:
         1. Select two different Premier League teams  
