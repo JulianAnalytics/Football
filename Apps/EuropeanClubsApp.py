@@ -58,10 +58,10 @@ class EuroQuiz:
         st.markdown("""
             <div style="text-align: center;">
                 <img src="https://upload.wikimedia.org/wikipedia/en/f/f2/Premier_League_Logo.svg" width="100" style="margin: 10px;">
-                <img src="https://res.cloudinary.com/dfj9j9eji/image/upload/v1682391180/bundesliga_logo_2017_x7ixmm.png" width="100" style="margin: 10px;"> <!-- Bundesliga Logo -->
-                <img src="https://res.cloudinary.com/dfj9j9eji/image/upload/v1682391191/serie_a_logo_2022_rzabf5.png" width="100" style="margin: 10px;"> <!-- Serie A Logo -->
-                <img src="https://res.cloudinary.com/dfj9j9eji/image/upload/v1682391196/la_liga_logo_2023_qkso6g.png" width="100" style="margin: 10px;"> <!-- La Liga Logo -->
-                <img src="https://res.cloudinary.com/dfj9j9eji/image/upload/v1682391201/ligue_1_logo_2024_tso1zx.png" width="100" style="margin: 10px;"> <!-- Ligue 1 Logo -->
+                <img src="https://i.imgur.com/WpD6t2a.png" width="100" style="margin: 10px;"> <!-- Bundesliga Logo -->
+                <img src="https://i.imgur.com/dj9gFwD.png" width="100" style="margin: 10px;"> <!-- Serie A Logo -->
+                <img src="https://i.imgur.com/Mxopq8o.png" width="100" style="margin: 10px;"> <!-- La Liga Logo -->
+                <img src="https://i.imgur.com/LuRrOww.png" width="100" style="margin: 10px;"> <!-- Ligue 1 Logo -->
             </div>
             <h1 style="text-align: center;">⚽️ Squad Connections Quiz</h1>
         """, unsafe_allow_html=True)
