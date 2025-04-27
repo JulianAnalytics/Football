@@ -66,7 +66,7 @@ class EuroQuiz:
                 <img src="https://i.imgur.com/Ca9NLSb.png" width="75" style="margin: 10px;"> 
                 <img src="https://i.imgur.com/BYKNuEO.png" width="85" style="margin: 10px;"> 
             </div>
-            <h1 style="text-align: center;">⚽️ Football Team Connections Challenge</h1>
+            <h1 style="text-align: center;">⚽️ Squad Connections Game</h1>
         """, unsafe_allow_html=True)
 
         st.markdown("""
