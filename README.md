@@ -6,7 +6,7 @@
 
 ⚽ Three position-specific player models which identify and score potential transfer targets
 
-⚽ Data gathering methods for scraping from FBref.com, Transfermarkt.com and utilising the StatsBomb API
+⚽ Data gathering methods for scraping from FBref.com, Transfermarkt.com, Understat.com and utilising the StatsBomb API
 
 ⚽ Visualisations including match dashboards and passing networks
 
