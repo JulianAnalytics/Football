@@ -68,7 +68,7 @@ class PLTeamQuiz:
         st.markdown("""
         ### How to Play:
         1. Select two different Premier League teams
-        2. Try to guess players who have played for both teams
+        2. Guess players who have played for both teams
         3. Get points for correct guesses!
         """)
 
