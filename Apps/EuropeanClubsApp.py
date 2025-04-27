@@ -66,7 +66,6 @@ class EuroQuiz:
             <h1 style="text-align: center;">⚽️ Squad Connections Quiz</h1>
         """, unsafe_allow_html=True)
 
-
         st.markdown("""
         ### How to Play:
         1. Select two different teams from the big 5 European leagues  
@@ -111,7 +110,7 @@ class EuroQuiz:
         team1_display = self.team_map.get(team1_norm, team1_norm.title())
         team2_display = self.team_map.get(team2_norm, team2_norm.title())
 
-        # Modified message: single line showing number of common players
+        # Modified message with bold number of players
         st.info(f"🎯 Find <strong>{len(st.session_state.common_players)}</strong> players who have played for both {team1_display} and {team2_display}", unsafe_allow_html=True)
 
     def show_quiz_interface(self):
@@ -169,3 +168,4 @@ class EuroQuiz:
 
 if __name__ == "__main__":
     quiz = EuroQuiz()
+
