@@ -99,7 +99,108 @@ class EuroQuiz:
         for norm, disp in self.team_map.items():
             if disp == team_display_name:
                 return norm
-        return team_display_name
+        return team_display_name.casefold()
 
+    def find_connections(self, team1_norm, team2_norm):
+        team1_players = self.find_players_for_team(team1_norm)
+        team2_players = self.find_players_for_team(team2_norm)
+
+        # Find common players by checking for exact matches of both player names and birth years
+        common = set()
+
+        for player1, year1 in team1_players:
+            for player2, year2 in team2_players:
+                # Exact match check: player names and birth years
+                if self.normalize_string(player1.lower()) == self.normalize_string(player2.lower()) and year1 == year2:
+                    common.add((player1, year1))
+
+        st.session_state.common_raw = common
+        st.session_state.common_players = sorted([p for p, y in common if pd.notna(y)])
+
+        st.session_state.guesses = []
+        st.session_state.show_answers = False
+        st.session_state.correct_count = 0
+
+        team1_display = self.team_map.get(team1_norm, team1_norm.title())
+        team2_display = self.team_map.get(team2_norm, team2_norm.title())
+
+        st.info(f"🎯 Find {len(st.session_state.common_players)} players who have played for both {team1_display} and {team2_display}")
+
+    def show_quiz_interface(self):
+        col1, col2, col3 = st.columns([2, 1, 1])
+
+        with col1:
+            guess = st.text_input("Enter a player name:", key="guess_input")
+
+        with col2:
+            if st.button("Submit Guess", type="primary"):
+                if guess:
+                    guess_normalized = self.normalize_string(guess.strip().lower())
+                    already_guessed = [self.normalize_string(g.lower()) for g in st.session_state.guesses]
+
+                    if guess_normalized not in already_guessed:
+                        st.session_state.guesses.append(guess)
+
+                        matched = False
+                        for player, _ in st.session_state.common_raw:
+                            player_norm = self.normalize_string(player.lower())
+                            # Use fuzzy matching only here for user guesses
+                            if fuzz.token_set_ratio(guess_normalized, player_norm) >= 90:
+                                matched = True
+                                break
+
+                        if matched:
+                            st.session_state.correct_count += 1
+
+        with col3:
+            if st.button("Show/Hide Answers", type="secondary"):
+                st.session_state.show_answers = not st.session_state.show_answers
+
+        if st.session_state.guesses:
+            self.show_results()
+
+        if st.session_state.show_answers:
+            st.write("### 📝 All Players")
+            for player in st.session_state.common_players:
+                st.write(f"• {player}")
+
+    def show_results(self):
+        correct_names = {self.normalize_string(name.lower()) for name, _ in st.session_state.common_raw}
+        guessed = {self.normalize_string(g.lower()): g for g in st.session_state.guesses}
+
+        correct_guesses = []
+        incorrect_guesses = []
+
+        for guess_norm, original_guess in guessed.items():
+            match_found = False
+            for name in correct_names:
+                if fuzz.token_set_ratio(guess_norm, name) >= 90:
+                    match_found = True
+                    break
+            if match_found:
+                correct_guesses.append(original_guess)
+            else:
+                incorrect_guesses.append(original_guess)
+
+        st.progress(len(correct_guesses) / len(st.session_state.common_players))
+
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            st.metric("✅ Correct", len(correct_guesses))
+        with col2:
+            st.metric("❌ Incorrect", len(incorrect_guesses))
+        with col3:
+            st.metric("🎯 Remaining", len(st.session_state.common_players) - len(correct_guesses))
+
+        st.write("### Your Guesses")
+        for guess in st.session_state.guesses:
+            if guess in correct_guesses:
+                st.success(f"✅ {guess}")
+            else:
+                st.error(f"❌ {guess}")
+
+
+if __name__ == "__main__":
+    quiz = EuroQuiz()
 
 
