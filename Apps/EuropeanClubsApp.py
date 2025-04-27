@@ -48,15 +48,13 @@ class EuroQuiz:
             st.session_state.correct_count = 0
 
     def find_players_for_team(self, team_normalized):
-        """Return a set of (player_name, birth_year) tuples for a given team."""
-        players = self.df[self.df['Squad_normalized'] == team_normalized]
-        return set(zip(players['Player'], players['Born']))
+        return set(self.df[self.df['Squad_normalized'] == team_normalized]['Player'].unique())
 
     def normalize_string(self, text):
         return ''.join(c for c in unicodedata.normalize('NFD', text) if unicodedata.category(c) != 'Mn')
 
     def create_ui(self):
-        # Display five different league logos side by side
+        # Display five different league logos side by side, using Cloudinary links
         st.markdown("""
             <div style="text-align: center;">
                 <img src="https://upload.wikimedia.org/wikipedia/en/f/f2/Premier_League_Logo.svg" width="160" style="margin: 10px;">
@@ -101,20 +99,29 @@ class EuroQuiz:
         return team_display_name.casefold()
 
     def find_connections(self, team1_norm, team2_norm):
+        # Get players for both teams
         team1_players = self.find_players_for_team(team1_norm)
         team2_players = self.find_players_for_team(team2_norm)
 
         # Find common players based on name and birth year
         st.session_state.common_players = sorted(list(team1_players & team2_players))
+
+        # Debugging: Print the list of common players
+        st.write(f"Debug: Found common players: {st.session_state.common_players}")
+        
+        # Check if common players list is empty
+        if not st.session_state.common_players:
+            st.info("🎯 No common players found between these two teams.")
+        else:
+            team1_display = self.team_map.get(team1_norm, team1_norm.title())
+            team2_display = self.team_map.get(team2_norm, team2_norm.title())
+            # Display the number of common players
+            st.info(f"🎯 Find {len(st.session_state.common_players)} <strong>players</strong> who have played for both {team1_display} and {team2_display}", unsafe_allow_html=True)
+
+        # Initialize or reset other session state variables
         st.session_state.guesses = []
         st.session_state.show_answers = False
         st.session_state.correct_count = 0
-
-        team1_display = self.team_map.get(team1_norm, team1_norm.title())
-        team2_display = self.team_map.get(team2_norm, team2_norm.title())
-
-        # Modified message: single line showing number of common players
-        st.info(f"🎯 Find {len(st.session_state.common_players)} <strong>players</strong> who have played for both {team1_display} and {team2_display}", unsafe_allow_html=True)
 
     def show_quiz_interface(self):
         col1, col2, col3 = st.columns([2, 1, 1])
@@ -126,14 +133,10 @@ class EuroQuiz:
             if st.button("Submit Guess", type="primary"):
                 if guess:
                     guess_normalized = self.normalize_string(guess.strip().lower())
-                    # Check both player name and birth year for matching
-                    matching_players = [
-                        (name, year) for name, year in st.session_state.common_players
-                        if self.normalize_string(name.lower()) == guess_normalized
-                    ]
-                    if matching_players and guess_normalized not in [self.normalize_string(g.lower()) for g in st.session_state.guesses]:
+                    if guess_normalized not in [self.normalize_string(g.lower()) for g in st.session_state.guesses]:
                         st.session_state.guesses.append(guess)
-                        st.session_state.correct_count += 1
+                        if guess_normalized in [self.normalize_string(p.lower()) for p in st.session_state.common_players]:
+                            st.session_state.correct_count += 1
 
         with col3:
             if st.button("Show/Hide Answers", type="secondary"):
@@ -144,15 +147,15 @@ class EuroQuiz:
 
         if st.session_state.show_answers:
             st.write("### 📝 All Players")
-            for player, year in st.session_state.common_players:
-                st.write(f"• {player} ({year})")
+            for player in st.session_state.common_players:
+                st.write(f"• {player}")
 
     def show_results(self):
         correct_guesses = set([self.normalize_string(g.lower()) for g in st.session_state.guesses]) & \
-                          set([self.normalize_string(p.lower()) for p, _ in st.session_state.common_players])
+                          set([self.normalize_string(p.lower()) for p in st.session_state.common_players])
         incorrect_guesses = set([self.normalize_string(g.lower()) for g in st.session_state.guesses]) - \
-                            set([self.normalize_string(p.lower()) for p, _ in st.session_state.common_players])
-        remaining = set([self.normalize_string(p.lower()) for p, _ in st.session_state.common_players]) - correct_guesses
+                            set([self.normalize_string(p.lower()) for p in st.session_state.common_players])
+        remaining = set([self.normalize_string(p.lower()) for p in st.session_state.common_players]) - correct_guesses
 
         st.progress(len(correct_guesses) / len(st.session_state.common_players))
 
@@ -175,5 +178,6 @@ class EuroQuiz:
 
 if __name__ == "__main__":
     quiz = EuroQuiz()
+
 
 
