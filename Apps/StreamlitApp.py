@@ -11,25 +11,9 @@ class PLTeamQuiz:
             page_icon="https://upload.wikimedia.org/wikipedia/en/f/f2/Premier_League_Logo.svg",  # Keep the Premier League logo as page icon
             layout="wide"
         )
-        # Add custom meta tags to control link previews
-        self.add_meta_tags()
-
         self.load_data()
         self.initialize_session_state()
         self.create_ui()
-
-    def add_meta_tags(self):
-        """Add custom meta tags to control link preview on platforms like WhatsApp, Slack, etc."""
-        st.markdown("""
-            <meta property="og:title" content="Premier League Squad Connections Quiz" />
-            <meta property="og:description" content="Test your knowledge of Premier League players who have played for multiple teams!" />
-            <meta property="og:image" content="https://upload.wikimedia.org/wikipedia/en/f/f2/Premier_League_Logo.svg" />
-            <meta property="og:url" content="https://your-app-url-here.com" />
-            <meta name="twitter:card" content="summary_large_image" />
-            <meta name="twitter:title" content="Premier League Squad Connections Quiz" />
-            <meta name="twitter:description" content="Test your knowledge of Premier League players who have played for multiple teams!" />
-            <meta name="twitter:image" content="https://upload.wikimedia.org/wikipedia/en/f/f2/Premier_League_Logo.svg" />
-        """, unsafe_allow_html=True)
 
     def load_data(self):
         """Load player data from CSV."""
@@ -184,4 +168,3 @@ class PLTeamQuiz:
 
 if __name__ == "__main__":
     quiz = PLTeamQuiz()
-
