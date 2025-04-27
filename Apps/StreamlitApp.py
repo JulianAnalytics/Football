@@ -70,13 +70,13 @@ class PLTeamQuiz:
         self.apply_custom_style()
 
         # Create a row with two columns: one for the lion image and one for the title
-        col1, col2 = st.columns([1, 2])  # Adjust column widths to make room for the logo
+        col1, col2 = st.columns([1, 6])  # Adjusted column width to reduce space
 
         with col1:
-            st.image("Apps/lion.png", width=100)  # Adjusted width for smaller logo
+            st.image("Apps/lion.png", width=50)  # Adjusted size of the lion logo
 
         with col2:
-            st.title("Premier League Squad Connections Quiz")
+            st.title("Premier League Squad Connections Quiz")  # Title next to the logo
         
         st.markdown("""
         ### How to Play:
@@ -147,27 +147,5 @@ class PLTeamQuiz:
     def show_results(self):
         correct_guesses = set([self.normalize_string(g.lower()) for g in st.session_state.guesses]) & set([self.normalize_string(p.lower()) for p in st.session_state.common_players])
         incorrect_guesses = set([self.normalize_string(g.lower()) for g in st.session_state.guesses]) - set([self.normalize_string(p.lower()) for p in st.session_state.common_players])
-        remaining = set([self.normalize_string(p.lower()) for p in st.session_state.common_players]) - correct_guesses
-
-        progress = len(correct_guesses) / len(st.session_state.common_players)
-        st.progress(progress)
-
-        col1, col2, col3 = st.columns(3)
-        with col1:
-            st.metric("✅ Correct", len(correct_guesses))
-        with col2:
-            st.metric("❌ Incorrect", len(incorrect_guesses))
-        with col3:
-            st.metric("🎯 Remaining", len(remaining))
-
-        st.write("### Your Guesses")
-        for guess in st.session_state.guesses:
-            guess_normalized = self.normalize_string(guess.lower())
-            if guess_normalized in correct_guesses:
-                st.success(f"✅ {guess}")
-            else:
-                st.error(f"❌ {guess}")
-
-if __name__ == "__main__":
-    quiz = PLTeamQuiz()
+        remaining = set([self.normalize_string(p.lower()) for p in st.session_state.common_players]) - correct_gu
 
