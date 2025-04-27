@@ -8,7 +8,7 @@ from rapidfuzz import fuzz  # <-- New import for fuzzy matching
 class EuroQuiz:
     def __init__(self):
         st.set_page_config(
-            page_title="Squad Connections Quiz",
+            page_title="Football Team Connections Quiz",
             page_icon="⚽️",
             layout="wide"
         )
@@ -66,7 +66,7 @@ class EuroQuiz:
                 <img src="https://i.imgur.com/Ca9NLSb.png" width="75" style="margin: 10px;"> 
                 <img src="https://i.imgur.com/BYKNuEO.png" width="85" style="margin: 10px;"> 
             </div>
-            <h1 style="text-align: center;">⚽️ Squad Connections Quiz</h1>
+            <h1 style="text-align: center;">Football Team Connections Quiz</h1>
         """, unsafe_allow_html=True)
 
         st.markdown("""
