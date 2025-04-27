@@ -46,16 +46,14 @@ class EuroQuiz:
         return ''.join(c for c in unicodedata.normalize('NFD', text) if unicodedata.category(c) != 'Mn')
 
     def create_ui(self):
-        st.markdown("""
-            <div style="text-align: center;">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/a/a2/Premier_League_logo_2016.svg" width="90">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/4/47/La_Liga_logo_2023.svg" width="90">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/0/0e/Serie_A_logo_2019.svg" width="90">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/1/1b/Bundesliga_Logo_2010.svg" width="90">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/7/7f/Ligue_1_logo_2018.svg" width="90">
-            </div>
-            <h1 style="text-align: center;">Squad Connections Quiz</h1>
-        """, unsafe_allow_html=True)
+        # Display league logos using st.image
+        st.image("https://upload.wikimedia.org/wikipedia/commons/a/a2/Premier_League_logo_2016.svg", width=90)
+        st.image("https://upload.wikimedia.org/wikipedia/commons/4/47/La_Liga_logo_2023.svg", width=90)
+        st.image("https://upload.wikimedia.org/wikipedia/commons/0/0e/Serie_A_logo_2019.svg", width=90)
+        st.image("https://upload.wikimedia.org/wikipedia/commons/1/1b/Bundesliga_Logo_2010.svg", width=90)
+        st.image("https://upload.wikimedia.org/wikipedia/commons/7/7f/Ligue_1_logo_2018.svg", width=90)
+
+        st.markdown("<h1 style='text-align: center;'>Squad Connections Quiz</h1>", unsafe_allow_html=True)
 
         st.markdown("""
         ### How to Play:
