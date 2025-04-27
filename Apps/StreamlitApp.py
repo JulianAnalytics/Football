@@ -8,7 +8,7 @@ class PLTeamQuiz:
     def __init__(self):
         st.set_page_config(
             page_title="Premier League Squad Connections Quiz",
-            page_icon="⚽",
+            page_icon="https://upload.wikimedia.org/wikipedia/en/f/f2/Premier_League_Logo.svg",
             layout="wide"
         )
         self.load_data()
