@@ -8,7 +8,7 @@ class EuroQuiz:
     def __init__(self):
         st.set_page_config(
             page_title="Squad Connections Quiz",
-            page_icon="⚽️",  # Soccer emoji as the page icon
+            page_icon="⚽️",
             layout="wide"
         )
         self.load_data()
@@ -29,6 +29,9 @@ class EuroQuiz:
             self.df['Squad'] = self.df['Squad'].astype(str).str.strip()
             self.df['Squad_normalized'] = self.df['Squad'].str.casefold()
 
+            # Extract year from Born column
+            self.df['YearBorn'] = pd.to_datetime(self.df['Born'], errors='coerce').dt.year
+
             # Map normalized name to original name for display
             self.team_map = dict(zip(self.df['Squad_normalized'], self.df['Squad']))
             self.all_teams = sorted(self.team_map.keys())
@@ -40,6 +43,8 @@ class EuroQuiz:
     def initialize_session_state(self):
         if 'common_players' not in st.session_state:
             st.session_state.common_players = []
+        if 'raw_common_set' not in st.session_state:
+            st.session_state.raw_common_set = set()
         if 'guesses' not in st.session_state:
             st.session_state.guesses = []
         if 'show_answers' not in st.session_state:
@@ -48,13 +53,14 @@ class EuroQuiz:
             st.session_state.correct_count = 0
 
     def find_players_for_team(self, team_normalized):
-        return set(self.df[self.df['Squad_normalized'] == team_normalized]['Player'].unique())
+        team_df = self.df[self.df['Squad_normalized'] == team_normalized]
+        return set(zip(team_df['Player'], team_df['YearBorn']))
 
     def normalize_string(self, text):
         return ''.join(c for c in unicodedata.normalize('NFD', text) if unicodedata.category(c) != 'Mn')
 
     def create_ui(self):
-        # Display five different league logos side by side, using Cloudinary links
+        # Display league logos
         st.markdown("""
             <div style="text-align: center;">
                 <img src="https://upload.wikimedia.org/wikipedia/en/f/f2/Premier_League_Logo.svg" width="160" style="margin: 10px;">
@@ -99,29 +105,21 @@ class EuroQuiz:
         return team_display_name.casefold()
 
     def find_connections(self, team1_norm, team2_norm):
-        # Get players for both teams
         team1_players = self.find_players_for_team(team1_norm)
         team2_players = self.find_players_for_team(team2_norm)
 
-        # Find common players based on name and birth year
-        st.session_state.common_players = sorted(list(team1_players & team2_players))
+        common = team1_players & team2_players
+        st.session_state.common_players = sorted([name for name, year in common if pd.notna(year)])
+        st.session_state.raw_common_set = set(common)
 
-        # Debugging: Print the list of common players
-        st.write(f"Debug: Found common players: {st.session_state.common_players}")
-        
-        # Check if common players list is empty
-        if not st.session_state.common_players:
-            st.info("🎯 No common players found between these two teams.")
-        else:
-            team1_display = self.team_map.get(team1_norm, team1_norm.title())
-            team2_display = self.team_map.get(team2_norm, team2_norm.title())
-            # Display the number of common players
-            st.info(f"🎯 Find {len(st.session_state.common_players)} <strong>players</strong> who have played for both {team1_display} and {team2_display}", unsafe_allow_html=True)
-
-        # Initialize or reset other session state variables
         st.session_state.guesses = []
         st.session_state.show_answers = False
         st.session_state.correct_count = 0
+
+        team1_display = self.team_map.get(team1_norm, team1_norm.title())
+        team2_display = self.team_map.get(team2_norm, team2_norm.title())
+
+        st.info(f"🎯 Find {len(st.session_state.common_players)} players who have played for both {team1_display} and {team2_display}")
 
     def show_quiz_interface(self):
         col1, col2, col3 = st.columns([2, 1, 1])
@@ -135,7 +133,7 @@ class EuroQuiz:
                     guess_normalized = self.normalize_string(guess.strip().lower())
                     if guess_normalized not in [self.normalize_string(g.lower()) for g in st.session_state.guesses]:
                         st.session_state.guesses.append(guess)
-                        if guess_normalized in [self.normalize_string(p.lower()) for p in st.session_state.common_players]:
+                        if any(self.normalize_string(name.lower()) == guess_normalized for name, _ in st.session_state.raw_common_set):
                             st.session_state.correct_count += 1
 
         with col3:
@@ -152,10 +150,9 @@ class EuroQuiz:
 
     def show_results(self):
         correct_guesses = set([self.normalize_string(g.lower()) for g in st.session_state.guesses]) & \
-                          set([self.normalize_string(p.lower()) for p in st.session_state.common_players])
-        incorrect_guesses = set([self.normalize_string(g.lower()) for g in st.session_state.guesses]) - \
-                            set([self.normalize_string(p.lower()) for p in st.session_state.common_players])
-        remaining = set([self.normalize_string(p.lower()) for p in st.session_state.common_players]) - correct_guesses
+                          set([self.normalize_string(name.lower()) for name, _ in st.session_state.raw_common_set])
+        incorrect_guesses = set([self.normalize_string(g.lower()) for g in st.session_state.guesses]) - correct_guesses
+        remaining = set([self.normalize_string(name.lower()) for name, _ in st.session_state.raw_common_set]) - correct_guesses
 
         st.progress(len(correct_guesses) / len(st.session_state.common_players))
 
@@ -178,6 +175,5 @@ class EuroQuiz:
 
 if __name__ == "__main__":
     quiz = EuroQuiz()
-
 
 
