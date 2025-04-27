@@ -21,7 +21,7 @@ class PLTeamQuiz:
             <style>
                 html, body, [class*="css"] {
                     font-family: Rockwell, 'Serifa', Georgia, serif;
-                    background: linear-gradient(135deg, #b0c4de, #ccd9e8);  /* Blue-grey gradient */
+                    background: linear-gradient(135deg, #b0c4de, #ccd9e8);
                     color: #000000;
                 }
 
@@ -69,11 +69,14 @@ class PLTeamQuiz:
     def create_ui(self):
         self.apply_custom_style()
 
+        # 🦁 Premier League logo at the top
+        st.image("https://upload.wikimedia.org/wikipedia/en/f/f2/Premier_League_Logo.svg", width=100)
+
         st.title("⚽ Premier League Team Connection Quiz")
         st.markdown("""
         ### How to Play:
-        1. Select two different Premier League teams
-        2. Try to guess players who have played for both teams
+        1. Select two different Premier League teams  
+        2. Try to guess players who have played for both teams  
         3. Get points for correct guesses!
         """)
 
