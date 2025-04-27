@@ -4,11 +4,11 @@ import requests
 from io import StringIO
 import unicodedata
 
-class PLTeamQuiz:
+class EuroQuiz:
     def __init__(self):
         st.set_page_config(
-            page_title="Premier League Squad Connections Quiz",
-            page_icon="https://upload.wikimedia.org/wikipedia/en/f/f2/Premier_League_Logo.svg",  # Keep the Premier League logo as page icon
+            page_title="Squad Connections Quiz",
+            page_icon="https://upload.wikimedia.org/wikipedia/en/f/f2/Premier_League_Logo.svg",
             layout="wide"
         )
         self.load_data()
@@ -18,15 +18,11 @@ class PLTeamQuiz:
     def load_data(self):
         """Load player data from CSV."""
         try:
-            # Load data from GitHub raw file
             url = "https://raw.githubusercontent.com/JulianB22/Football/main/data/european_leagues_players.csv"
             response = requests.get(url)
-            response.raise_for_status()  # Raise an exception for bad status codes
-            
-            # Read CSV from string
+            response.raise_for_status()
             csv_string = StringIO(response.text)
             self.df = pd.read_csv(csv_string)
-            # Convert all team names to lowercase for case-insensitive comparison
             self.df['Squad'] = self.df['Squad'].str.lower()
             self.all_teams = sorted(self.df['Squad'].unique())
         except Exception as e:
@@ -46,28 +42,35 @@ class PLTeamQuiz:
 
     def find_players_for_team(self, team):
         """Find all players who have played for a team."""
-        # Convert team name to lowercase for case-insensitive comparison
         team = team.lower()
         return set(self.df[self.df['Squad'] == team]['Player'].unique())
 
     def normalize_string(self, text):
         """Normalize a string by removing accents."""
-        # Normalize the string and remove accents (NFD: Normalization Form Decomposed)
         return ''.join(c for c in unicodedata.normalize('NFD', text) if unicodedata.category(c) != 'Mn')
 
     def create_ui(self):
         """Create the Streamlit user interface."""
-        # Display the Premier League logo above the title
+
+        # Add five league logos at the top
         st.markdown("""
-            <div style="text-align: center;">
-                <img src="https://upload.wikimedia.org/wikipedia/en/f/f2/Premier_League_Logo.svg" width="200">
-            </div>
-            <h1 style="text-align: center;">Squad Connections Quiz</h1>
+        <div style="text-align: center; margin-bottom: 20px;">
+            <img src="https://upload.wikimedia.org/wikipedia/en/f/f2/Premier_League_Logo.svg" alt="Premier League" width="80" style="margin: 0 10px;">
+            <img src="https://upload.wikimedia.org/wikipedia/en/9/92/La_Liga_logo_%282023%29.svg" alt="La Liga" width="80" style="margin: 0 10px;">
+            <img src="https://upload.wikimedia.org/wikipedia/en/e/e1/Serie_A_logo_%282019%29.svg" alt="Serie A" width="80" style="margin: 0 10px;">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/d/df/Bundesliga_logo_%282017%29.svg" alt="Bundesliga" width="80" style="margin: 0 10px;">
+            <img src="https://upload.wikimedia.org/wikipedia/en/c/c7/Ligue1.svg" alt="Ligue 1" width="80" style="margin: 0 10px;">
+        </div>
+        """, unsafe_allow_html=True)
+
+        # Quiz title
+        st.markdown("""
+        <h1 style="text-align: center;">Squad Connections Quiz</h1>
         """, unsafe_allow_html=True)
 
         st.markdown("""
         ### How to Play:
-        1. Select two different Premier League teams
+        1. Select two different teams from Europe's top leagues
         2. Guess players who have played for both teams
         3. Get points for correct guesses!
         """)
@@ -75,11 +78,9 @@ class PLTeamQuiz:
         col1, col2 = st.columns(2)
 
         with col1:
-            # Display teams with the first letter of each word capitalized
             team1 = st.selectbox("Select First Team:", [team.title() for team in self.all_teams], key='team1')
 
         with col2:
-            # Display teams with the first letter of each word capitalized
             team2 = st.selectbox("Select Second Team:", [team.title() for team in self.all_teams], key='team2')
 
         if st.button("Find Connections", type="primary"):
@@ -93,7 +94,6 @@ class PLTeamQuiz:
 
     def find_connections(self, team1, team2):
         """Find players who played for both teams."""
-        # Normalize team names to handle case-insensitive and accent-insensitive comparison
         team1_normalized = self.normalize_string(team1.lower())
         team2_normalized = self.normalize_string(team2.lower())
 
@@ -110,7 +110,6 @@ class PLTeamQuiz:
 
     def show_quiz_interface(self):
         """Show the quiz interface with guessing and scoring."""
-        # Create three columns
         col1, col2, col3 = st.columns([2, 1, 1])
 
         with col1:
@@ -119,11 +118,10 @@ class PLTeamQuiz:
         with col2:
             if st.button("Submit Guess", type="primary"):
                 if guess:
-                    # Normalize guess to lowercase and remove accents
                     guess_normalized = self.normalize_string(guess.strip().lower())
-                    if guess_normalized not in [self.normalize_string(g.lower()) for g in st.session_state.guesses]:  # Compare case-insensitively
+                    if guess_normalized not in [self.normalize_string(g.lower()) for g in st.session_state.guesses]:
                         st.session_state.guesses.append(guess)
-                        if guess_normalized in [self.normalize_string(p.lower()) for p in st.session_state.common_players]:  # Compare case-insensitively
+                        if guess_normalized in [self.normalize_string(p.lower()) for p in st.session_state.common_players]:
                             st.session_state.correct_count += 1
 
         with col3:
@@ -144,11 +142,9 @@ class PLTeamQuiz:
         incorrect_guesses = set([self.normalize_string(g.lower()) for g in st.session_state.guesses]) - set([self.normalize_string(p.lower()) for p in st.session_state.common_players])
         remaining = set([self.normalize_string(p.lower()) for p in st.session_state.common_players]) - correct_guesses
 
-        # Create a progress bar
         progress = len(correct_guesses) / len(st.session_state.common_players)
         st.progress(progress)
 
-        # Show stats in columns
         col1, col2, col3 = st.columns(3)
         with col1:
             st.metric("✅ Correct", len(correct_guesses))
@@ -157,7 +153,6 @@ class PLTeamQuiz:
         with col3:
             st.metric("🎯 Remaining", len(remaining))
 
-        # Show guesses with emojis
         st.write("### Your Guesses")
         for guess in st.session_state.guesses:
             guess_normalized = self.normalize_string(guess.lower())
@@ -167,4 +162,4 @@ class PLTeamQuiz:
                 st.error(f"❌ {guess}")
 
 if __name__ == "__main__":
-    quiz = PLTeamQuiz()
+    quiz = EuroQuiz()
