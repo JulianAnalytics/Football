@@ -76,16 +76,18 @@ class EuroQuiz:
         3. Get points for correct guesses!
         """)
 
-        # Set default team values
+        # Set default team values and normalize them
         default_team1 = "Arsenal"
         default_team2 = "Barcelona"
+        default_team1_normalized = default_team1.casefold()
+        default_team2_normalized = default_team2.casefold()
 
         col1, col2 = st.columns(2)
 
         with col1:
-            team1_display = st.selectbox("Select First Team:", [self.team_map[t] for t in self.all_teams], key='team1', index=self.all_teams.index(default_team1))
+            team1_display = st.selectbox("Select First Team:", [self.team_map[t] for t in self.all_teams], key='team1', index=self.all_teams.index(default_team1_normalized))
         with col2:
-            team2_display = st.selectbox("Select Second Team:", [self.team_map[t] for t in self.all_teams], key='team2', index=self.all_teams.index(default_team2))
+            team2_display = st.selectbox("Select Second Team:", [self.team_map[t] for t in self.all_teams], key='team2', index=self.all_teams.index(default_team2_normalized))
 
         team1_normalized = self.get_normalized_team_name(team1_display)
         team2_normalized = self.get_normalized_team_name(team2_display)
