@@ -4,11 +4,11 @@ import requests
 from io import StringIO
 import unicodedata
 
-class EuropeanLeaguesQuiz:
+class PLTeamQuiz:
     def __init__(self):
         st.set_page_config(
-            page_title="European Leagues Squad Connections Quiz",
-            page_icon="https://upload.wikimedia.org/wikipedia/commons/3/33/European_Leagues_logo.svg",  # Example image URL
+            page_title="Premier League Squad Connections Quiz",
+            page_icon="https://upload.wikimedia.org/wikipedia/en/f/f2/Premier_League_Logo.svg",  # Keep the Premier League logo as page icon
             layout="wide"
         )
         self.load_data()
@@ -16,17 +16,18 @@ class EuropeanLeaguesQuiz:
         self.create_ui()
 
     def load_data(self):
-        """Load player data from GitHub raw URL."""
+        """Load player data from CSV."""
         try:
-            # Replace this URL with the raw URL of your CSV file in GitHub
-            url = "https://raw.githubusercontent.com/username/repository-name/main/european_leagues_players.csv"
-            self.df = pd.read_csv(url)
-
-            # Convert columns to strings before using .str accessor
-            self.df['Squad'] = self.df['Squad'].astype(str).str.lower()  # Ensure Squad column is a string
-            self.df['Player'] = self.df['Player'].astype(str).str.lower()  # Ensure Player column is a string
-            self.df['Born'] = self.df['Born'].astype(str).str.lower()  # Ensure Born column is a string
+            # Load data from GitHub raw file
+            url = "https://raw.githubusercontent.com/JulianB22/Football/main/data/european_leagues_players.csv"
+            response = requests.get(url)
+            response.raise_for_status()  # Raise an exception for bad status codes
             
+            # Read CSV from string
+            csv_string = StringIO(response.text)
+            self.df = pd.read_csv(csv_string)
+            # Convert all team names to lowercase for case-insensitive comparison
+            self.df['Squad'] = self.df['Squad'].str.lower()
             self.all_teams = sorted(self.df['Squad'].unique())
         except Exception as e:
             st.error(f"Error loading data: {str(e)}")
@@ -56,18 +57,18 @@ class EuropeanLeaguesQuiz:
 
     def create_ui(self):
         """Create the Streamlit user interface."""
-        # Display the European Leagues logo above the title
+        # Display the Premier League logo above the title
         st.markdown("""
             <div style="text-align: center;">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/3/33/European_Leagues_logo.svg" width="200">
+                <img src="https://upload.wikimedia.org/wikipedia/en/f/f2/Premier_League_Logo.svg" width="200">
             </div>
-            <h1 style="text-align: center;">European Leagues Squad Connections Quiz</h1>
+            <h1 style="text-align: center;">Squad Connections Quiz</h1>
         """, unsafe_allow_html=True)
 
         st.markdown("""
         ### How to Play:
-        1. Select two different European leagues
-        2. Guess players who have played for both leagues
+        1. Select two different Premier League teams
+        2. Guess players who have played for both teams
         3. Get points for correct guesses!
         """)
 
@@ -75,11 +76,11 @@ class EuropeanLeaguesQuiz:
 
         with col1:
             # Display teams with the first letter of each word capitalized
-            team1 = st.selectbox("Select First League Team:", [team.title() for team in self.all_teams], key='team1')
+            team1 = st.selectbox("Select First Team:", [team.title() for team in self.all_teams], key='team1')
 
         with col2:
             # Display teams with the first letter of each word capitalized
-            team2 = st.selectbox("Select Second League Team:", [team.title() for team in self.all_teams], key='team2')
+            team2 = st.selectbox("Select Second Team:", [team.title() for team in self.all_teams], key='team2')
 
         if st.button("Find Connections", type="primary"):
             if team1 == team2:
@@ -166,5 +167,4 @@ class EuropeanLeaguesQuiz:
                 st.error(f"❌ {guess}")
 
 if __name__ == "__main__":
-    quiz = EuropeanLeaguesQuiz()
-
+    quiz = PLTeamQuiz()
