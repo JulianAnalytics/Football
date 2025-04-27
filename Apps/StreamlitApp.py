@@ -69,10 +69,15 @@ class PLTeamQuiz:
     def create_ui(self):
         self.apply_custom_style()
 
-        # 🦁 Premier League lion logo at the top
-        st.image("Apps/lion.png", width=150)  # Adjusted width for smaller logo
+        # Create a row with two columns: one for the lion image and one for the title
+        col1, col2 = st.columns([1, 5])  # Adjust column widths to make room for the logo
 
-        st.title("Premier League Squad Connections Quiz")
+        with col1:
+            st.image("Apps/lion.png", width=100)  # Adjusted width for smaller logo
+
+        with col2:
+            st.title("Premier League Squad Connections Quiz")
+        
         st.markdown("""
         ### How to Play:
         1. Select two different Premier League teams  
@@ -165,3 +170,4 @@ class PLTeamQuiz:
 
 if __name__ == "__main__":
     quiz = PLTeamQuiz()
+
