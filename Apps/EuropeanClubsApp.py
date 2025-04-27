@@ -1,12 +1,14 @@
 import streamlit as st
 import pandas as pd
+import requests
+from io import StringIO
 import unicodedata
 
 class EuropeanLeaguesQuiz:
     def __init__(self):
         st.set_page_config(
             page_title="European Leagues Squad Connections Quiz",
-            page_icon="https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/Football_%28Soccer%29_Ball.svg/150px-Football_%28Soccer%29_Ball.svg.png",
+            page_icon="https://upload.wikimedia.org/wikipedia/commons/3/33/European_Leagues_logo.svg",  # Example image URL
             layout="wide"
         )
         self.load_data()
@@ -14,15 +16,17 @@ class EuropeanLeaguesQuiz:
         self.create_ui()
 
     def load_data(self):
-        """Load player data from CSV."""
+        """Load player data from GitHub raw URL."""
         try:
-            # Load data from local CSV (or URL if hosted somewhere)
-            self.df = pd.read_csv('european_leagues_players.csv')
+            # Replace this URL with the raw URL of your CSV file in GitHub
+            url = "https://raw.githubusercontent.com/username/repository-name/main/european_leagues_players.csv"
+            self.df = pd.read_csv(url)
+
+            # Convert columns to strings before using .str accessor
+            self.df['Squad'] = self.df['Squad'].astype(str).str.lower()  # Ensure Squad column is a string
+            self.df['Player'] = self.df['Player'].astype(str).str.lower()  # Ensure Player column is a string
+            self.df['Born'] = self.df['Born'].astype(str).str.lower()  # Ensure Born column is a string
             
-            # Normalize the columns for comparison (e.g., lowercase squad names, player names)
-            self.df['Squad'] = self.df['Squad'].str.lower()
-            self.df['Player'] = self.df['Player'].str.lower()
-            self.df['Born'] = self.df['Born'].str.lower()  # Normalize the Born column as well
             self.all_teams = sorted(self.df['Squad'].unique())
         except Exception as e:
             st.error(f"Error loading data: {str(e)}")
@@ -41,34 +45,41 @@ class EuropeanLeaguesQuiz:
 
     def find_players_for_team(self, team):
         """Find all players who have played for a team."""
+        # Convert team name to lowercase for case-insensitive comparison
         team = team.lower()
         return set(self.df[self.df['Squad'] == team]['Player'].unique())
 
     def normalize_string(self, text):
         """Normalize a string by removing accents."""
+        # Normalize the string and remove accents (NFD: Normalization Form Decomposed)
         return ''.join(c for c in unicodedata.normalize('NFD', text) if unicodedata.category(c) != 'Mn')
 
     def create_ui(self):
         """Create the Streamlit user interface."""
-        # Title and description
+        # Display the European Leagues logo above the title
         st.markdown("""
+            <div style="text-align: center;">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/3/33/European_Leagues_logo.svg" width="200">
+            </div>
             <h1 style="text-align: center;">European Leagues Squad Connections Quiz</h1>
         """, unsafe_allow_html=True)
 
         st.markdown("""
         ### How to Play:
-        1. Select two different European football teams (Premier League, La Liga, Bundesliga, Serie A, Ligue 1)
-        2. Guess players who have played for both teams
+        1. Select two different European leagues
+        2. Guess players who have played for both leagues
         3. Get points for correct guesses!
         """)
 
         col1, col2 = st.columns(2)
 
         with col1:
-            team1 = st.selectbox("Select First Team:", [team.title() for team in self.all_teams], key='team1')
+            # Display teams with the first letter of each word capitalized
+            team1 = st.selectbox("Select First League Team:", [team.title() for team in self.all_teams], key='team1')
 
         with col2:
-            team2 = st.selectbox("Select Second Team:", [team.title() for team in self.all_teams], key='team2')
+            # Display teams with the first letter of each word capitalized
+            team2 = st.selectbox("Select Second League Team:", [team.title() for team in self.all_teams], key='team2')
 
         if st.button("Find Connections", type="primary"):
             if team1 == team2:
@@ -81,13 +92,13 @@ class EuropeanLeaguesQuiz:
 
     def find_connections(self, team1, team2):
         """Find players who played for both teams."""
+        # Normalize team names to handle case-insensitive and accent-insensitive comparison
         team1_normalized = self.normalize_string(team1.lower())
         team2_normalized = self.normalize_string(team2.lower())
 
         team1_players = self.find_players_for_team(team1_normalized)
         team2_players = self.find_players_for_team(team2_normalized)
 
-        # Find common players and store their names and birth details
         st.session_state.common_players = sorted(list(team1_players & team2_players))
         st.session_state.guesses = []
         st.session_state.show_answers = False
@@ -98,6 +109,7 @@ class EuropeanLeaguesQuiz:
 
     def show_quiz_interface(self):
         """Show the quiz interface with guessing and scoring."""
+        # Create three columns
         col1, col2, col3 = st.columns([2, 1, 1])
 
         with col1:
@@ -123,9 +135,7 @@ class EuropeanLeaguesQuiz:
         if st.session_state.show_answers:
             st.write("### 📝 All Players")
             for player in st.session_state.common_players:
-                # Show the player name and their "Born" year for context
-                player_data = self.df[self.df['Player'] == player].iloc[0]
-                st.write(f"• {player_data['Player'].title()} (Born: {player_data['Born']})")
+                st.write(f"• {player}")
 
     def show_results(self):
         """Show the results of the user's guesses."""
@@ -157,3 +167,4 @@ class EuropeanLeaguesQuiz:
 
 if __name__ == "__main__":
     quiz = EuropeanLeaguesQuiz()
+
