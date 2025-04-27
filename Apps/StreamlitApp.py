@@ -73,6 +73,9 @@ class PLTeamQuiz:
                     display: block;
                     margin: 0 auto;
                 }
+                .stTextInput input {
+                    font-family: 'Roboto', sans-serif !important;
+                }
                 h3, h4, p {
                     font-weight: 400;
                     color: #333;
@@ -191,3 +194,4 @@ class PLTeamQuiz:
 
 if __name__ == "__main__":
     quiz = PLTeamQuiz()
+
