@@ -72,7 +72,7 @@ class PLTeamQuiz:
         # 🏆 Title with larger Premier League logo
         st.markdown("""
             <div style='display: flex; align-items: center; gap: 15px; margin-bottom: 1rem;'>
-                <img src='https://upload.wikimedia.org/wikipedia/en/f/f2/Premier_League_Logo.svg' width='120'>
+                <img src='https://upload.wikimedia.org/wikipedia/en/f/f2/Premier_League_Logo.svg' width='150'>
                 <h1 style='margin: 0;'>Squad Connections Quiz</h1>
             </div>
         """, unsafe_allow_html=True)
