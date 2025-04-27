@@ -1,6 +1,6 @@
-# Premier League Team Connection Quiz
+# Team Connection Quiz
 
-A fun quiz game that challenges your knowledge of Premier League players! Try to name players who have played for both of your selected teams.
+A fun quiz game that challenges your knowledge of european football! Try to name players who have played for both of your selected teams.
 
 ## 🎮 Play Now
 
@@ -8,7 +8,7 @@ You can play the game here: [Premier League Squad Game](https://premier-league-s
 
 ## 🎯 How to Play
 
-1. Select two different Premier League teams
+1. Select two different teams
 2. Try to guess players who have played for both teams
 3. Get instant feedback on your guesses
 4. Track your score and see how many players you can find
@@ -17,7 +17,7 @@ You can play the game here: [Premier League Squad Game](https://premier-league-s
 ## 🛠️ Technical Details
 
 - Built with Streamlit
-- Data covers Premier League seasons from 1992 to present
+- Data covers seasons from 1992 to present
 - Player data sourced from FBREF.com
 - Clean, responsive interface
 - Progress tracking and scoring system
