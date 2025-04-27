@@ -8,8 +8,8 @@ from rapidfuzz import fuzz  # <-- New import for fuzzy matching
 class EuroQuiz:
     def __init__(self):
         st.set_page_config(
-            page_title="Football Team Connections Game",  # Updated title without emoji
-            page_icon=None,  # No icon now (remove the emoji)
+            page_title="Squad Connections Quiz",
+            page_icon="⚽️",
             layout="wide"
         )
         self.load_data()
@@ -66,7 +66,7 @@ class EuroQuiz:
                 <img src="https://i.imgur.com/Ca9NLSb.png" width="75" style="margin: 10px;"> 
                 <img src="https://i.imgur.com/BYKNuEO.png" width="85" style="margin: 10px;"> 
             </div>
-            <h1 style="text-align: center;">Football Team Connections Game</h1>  <!-- Updated title -->
+            <h1 style="text-align: center;">⚽️ Football Team Connections Challenge</h1>
         """, unsafe_allow_html=True)
 
         st.markdown("""
@@ -175,4 +175,30 @@ class EuroQuiz:
             match_found = False
             for name in correct_names:
                 if fuzz.token_set_ratio(guess_norm, name) >= 90:
+                    match_found = True
+                    break
+            if match_found:
+                correct_guesses.append(original_guess)
+            else:
+                incorrect_guesses.append(original_guess)
 
+        st.progress(len(correct_guesses) / len(st.session_state.common_players))
+
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            st.metric("✅ Correct", len(correct_guesses))
+        with col2:
+            st.metric("❌ Incorrect", len(incorrect_guesses))
+        with col3:
+            st.metric("🎯 Remaining", len(st.session_state.common_players) - len(correct_guesses))
+
+        st.write("### Your Guesses")
+        for guess in st.session_state.guesses:
+            if guess in correct_guesses:
+                st.success(f"✅ {guess}")
+            else:
+                st.error(f"❌ {guess}")
+
+
+if __name__ == "__main__":
+    quiz = EuroQuiz()
