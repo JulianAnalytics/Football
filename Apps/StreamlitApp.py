@@ -69,14 +69,10 @@ class PLTeamQuiz:
     def create_ui(self):
         self.apply_custom_style()
 
-        # 🦁 Title with larger Premier League lion logo (uploaded image in the same directory)
-        st.markdown("""
-            <div style='display: flex; align-items: center; gap: 15px; margin-bottom: 1rem;'>
-                <img src='lion.png' width='120'>  <!-- Image from the same directory -->
-                <h1 style='margin: 0;'>Premier League Squad Connections Quiz</h1>
-            </div>
-        """, unsafe_allow_html=True)
+        # Lion logo at the top (replace the path with the correct one if needed)
+        st.image("lion.png", width=200)  # Ensure this path is correct
 
+        st.title("Premier League Squad Connections Quiz")
         st.markdown("""
         ### How to Play:
         1. Select two different Premier League teams  
@@ -169,4 +165,3 @@ class PLTeamQuiz:
 
 if __name__ == "__main__":
     quiz = PLTeamQuiz()
-
