@@ -8,7 +8,7 @@ class EuroQuiz:
     def __init__(self):
         st.set_page_config(
             page_title="Squad Connections Quiz",
-            page_icon="https://upload.wikimedia.org/wikipedia/en/6/6e/Premier_League_Logo.png",
+            page_icon="https://upload.wikimedia.org/wikipedia/en/f/f2/Premier_League_Logo.svg",  # Keep the Premier League logo as page icon
             layout="wide"
         )
         self.load_data()
@@ -18,11 +18,15 @@ class EuroQuiz:
     def load_data(self):
         """Load player data from CSV."""
         try:
+            # Load data from GitHub raw file
             url = "https://raw.githubusercontent.com/JulianB22/Football/main/data/european_leagues_players.csv"
             response = requests.get(url)
-            response.raise_for_status()
+            response.raise_for_status()  # Raise an exception for bad status codes
+            
+            # Read CSV from string
             csv_string = StringIO(response.text)
             self.df = pd.read_csv(csv_string)
+            # Convert all team names to lowercase for case-insensitive comparison
             self.df['Squad'] = self.df['Squad'].str.lower()
             self.all_teams = sorted(self.df['Squad'].unique())
         except Exception as e:
@@ -42,32 +46,32 @@ class EuroQuiz:
 
     def find_players_for_team(self, team):
         """Find all players who have played for a team."""
+        # Convert team name to lowercase for case-insensitive comparison
         team = team.lower()
         return set(self.df[self.df['Squad'] == team]['Player'].unique())
 
     def normalize_string(self, text):
         """Normalize a string by removing accents."""
+        # Normalize the string and remove accents (NFD: Normalization Form Decomposed)
         return ''.join(c for c in unicodedata.normalize('NFD', text) if unicodedata.category(c) != 'Mn')
 
     def create_ui(self):
         """Create the Streamlit user interface."""
-
-        # Display league logos
+        # Display league logos and title
         st.markdown("""
-        <div style="text-align: center; margin-bottom: 20px;">
-            <img src="https://upload.wikimedia.org/wikipedia/en/6/6e/Premier_League_Logo.png" width="80" style="margin: 0 10px;">
-            <img src="https://upload.wikimedia.org/wikipedia/en/thumb/9/92/La_Liga_logo_%282023%29.svg/200px-La_Liga_logo_%282023%29.svg.png" width="80" style="margin: 0 10px;">
-            <img src="https://upload.wikimedia.org/wikipedia/en/thumb/e/e1/Serie_A_logo_%282019%29.svg/200px-Serie_A_logo_%282019%29.svg.png" width="80" style="margin: 0 10px;">
-            <img src="https://upload.wikimedia.org/wikipedia/en/thumb/d/df/Bundesliga_logo_%282017%29.svg/200px-Bundesliga_logo_%282017%29.svg.png" width="80" style="margin: 0 10px;">
-            <img src="https://upload.wikimedia.org/wikipedia/en/thumb/c/c7/Ligue1.svg/200px-Ligue1.svg.png" width="80" style="margin: 0 10px;">
-        </div>
+            <div style="text-align: center;">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/a/a2/Premier_League_logo_2016.svg" width="100">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/4/47/La_Liga_logo_2023.svg" width="100">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/0/0e/Serie_A_logo_2019.svg" width="100">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/1/1b/Bundesliga_Logo_2010.svg" width="100">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/7/7f/Ligue_1_logo_2018.svg" width="100">
+            </div>
+            <h1 style="text-align: center;">Squad Connections Quiz</h1>
         """, unsafe_allow_html=True)
-
-        st.markdown("<h1 style='text-align: center;'>Squad Connections Quiz</h1>", unsafe_allow_html=True)
 
         st.markdown("""
         ### How to Play:
-        1. Select two different European teams
+        1. Select two different teams from the dropdowns
         2. Guess players who have played for both teams
         3. Get points for correct guesses!
         """)
@@ -75,9 +79,11 @@ class EuroQuiz:
         col1, col2 = st.columns(2)
 
         with col1:
+            # Display teams with the first letter of each word capitalized
             team1 = st.selectbox("Select First Team:", [team.title() for team in self.all_teams], key='team1')
 
         with col2:
+            # Display teams with the first letter of each word capitalized
             team2 = st.selectbox("Select Second Team:", [team.title() for team in self.all_teams], key='team2')
 
         if st.button("Find Connections", type="primary"):
@@ -91,6 +97,7 @@ class EuroQuiz:
 
     def find_connections(self, team1, team2):
         """Find players who played for both teams."""
+        # Normalize team names to handle case-insensitive and accent-insensitive comparison
         team1_normalized = self.normalize_string(team1.lower())
         team2_normalized = self.normalize_string(team2.lower())
 
@@ -107,6 +114,7 @@ class EuroQuiz:
 
     def show_quiz_interface(self):
         """Show the quiz interface with guessing and scoring."""
+        # Create three columns
         col1, col2, col3 = st.columns([2, 1, 1])
 
         with col1:
@@ -115,10 +123,11 @@ class EuroQuiz:
         with col2:
             if st.button("Submit Guess", type="primary"):
                 if guess:
+                    # Normalize guess to lowercase and remove accents
                     guess_normalized = self.normalize_string(guess.strip().lower())
-                    if guess_normalized not in [self.normalize_string(g.lower()) for g in st.session_state.guesses]:
+                    if guess_normalized not in [self.normalize_string(g.lower()) for g in st.session_state.guesses]:  # Compare case-insensitively
                         st.session_state.guesses.append(guess)
-                        if guess_normalized in [self.normalize_string(p.lower()) for p in st.session_state.common_players]:
+                        if guess_normalized in [self.normalize_string(p.lower()) for p in st.session_state.common_players]:  # Compare case-insensitively
                             st.session_state.correct_count += 1
 
         with col3:
@@ -135,29 +144,6 @@ class EuroQuiz:
 
     def show_results(self):
         """Show the results of the user's guesses."""
-        correct_guesses = set([self.normalize_string(g.lower()) for g in st.session_state.guesses]) & set([self.normalize_string(p.lower()) for p in st.session_state.common_players])
-        incorrect_guesses = set([self.normalize_string(g.lower()) for g in st.session_state.guesses]) - set([self.normalize_string(p.lower()) for p in st.session_state.common_players])
-        remaining = set([self.normalize_string(p.lower()) for p in st.session_state.common_players]) - correct_guesses
 
-        progress = len(correct_guesses) / len(st.session_state.common_players) if st.session_state.common_players else 0
-        st.progress(progress)
-
-        col1, col2, col3 = st.columns(3)
-        with col1:
-            st.metric("✅ Correct", len(correct_guesses))
-        with col2:
-            st.metric("❌ Incorrect", len(incorrect_guesses))
-        with col3:
-            st.metric("🎯 Remaining", len(remaining))
-
-        st.write("### Your Guesses")
-        for guess in st.session_state.guesses:
-            guess_normalized = self.normalize_string(guess.lower())
-            if guess_normalized in correct_guesses:
-                st.success(f"✅ {guess}")
-            else:
-                st.error(f"❌ {guess}")
-
-if __name__ == "__main__":
-    EuroQuiz()
-
+::contentReference[oaicite:1]{index=1}
+ 
