@@ -66,16 +66,13 @@ class PLTeamQuiz:
     def normalize_string(self, text):
         return ''.join(c for c in unicodedata.normalize('NFD', text) if unicodedata.category(c) != 'Mn')
 
-    def create_ui(self):
+        def create_ui(self):
         self.apply_custom_style()
 
-        # 🦁 Premier League logo at the top
-        st.image("https://upload.wikimedia.org/wikipedia/en/f/f2/Premier_League_Logo.svg", width=100)
-
-        # 🏆 Title with inline styling
+        # 🏆 Title with larger Premier League logo
         st.markdown("""
-            <div style='display: flex; align-items: center; gap: 10px;'>
-                <img src='https://upload.wikimedia.org/wikipedia/en/f/f2/Premier_League_Logo.svg' width='40'>
+            <div style='display: flex; align-items: center; gap: 15px; margin-bottom: 1rem;'>
+                <img src='https://upload.wikimedia.org/wikipedia/en/f/f2/Premier_League_Logo.svg' width='80'>
                 <h1 style='margin: 0;'>Premier League Squad Connections Quiz</h1>
             </div>
         """, unsafe_allow_html=True)
@@ -103,6 +100,7 @@ class PLTeamQuiz:
 
         if st.session_state.common_players:
             self.show_quiz_interface()
+
 
     def find_connections(self, team1, team2):
         team1_normalized = self.normalize_string(team1.lower())
