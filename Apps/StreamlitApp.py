@@ -69,10 +69,10 @@ class PLTeamQuiz:
     def create_ui(self):
         self.apply_custom_style()
 
-        # 🦁 Title with larger Premier League lion logo (locally saved image)
+        # 🦁 Title with larger Premier League lion logo (uploaded image in the same directory)
         st.markdown("""
             <div style='display: flex; align-items: center; gap: 15px; margin-bottom: 1rem;'>
-                <img src='file:///Users/julianball/Downloads/lion.png' width='120'>  <!-- Local file path -->
+                <img src='lion.png' width='120'>  <!-- Image from the same directory -->
                 <h1 style='margin: 0;'>Premier League Squad Connections Quiz</h1>
             </div>
         """, unsafe_allow_html=True)
@@ -169,3 +169,4 @@ class PLTeamQuiz:
 
 if __name__ == "__main__":
     quiz = PLTeamQuiz()
+
