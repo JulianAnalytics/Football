@@ -57,12 +57,35 @@ class PLTeamQuiz:
 
     def create_ui(self):
         """Create the Streamlit user interface."""
+        # Add custom CSS for font style and color
+        st.markdown("""
+            <style>
+                @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+                body {
+                    font-family: 'Roboto', sans-serif;
+                }
+                h1 {
+                    color: #4C8CFF;  /* Light blue color */
+                    font-weight: 700;
+                    text-align: center;
+                }
+                .title img {
+                    display: block;
+                    margin: 0 auto;
+                }
+                h3, h4, p {
+                    font-weight: 400;
+                    color: #333;
+                }
+            </style>
+        """, unsafe_allow_html=True)
+
         # Display the Premier League logo above the title
         st.markdown("""
-            <div style="text-align: center;">
+            <div class="title">
                 <img src="https://upload.wikimedia.org/wikipedia/en/f/f2/Premier_League_Logo.svg" width="200">
+                <h1>Squad Connections Quiz</h1>
             </div>
-            <h1 style="text-align: center;">Squad Connections Quiz</h1>
         """, unsafe_allow_html=True)
 
         st.markdown("""
