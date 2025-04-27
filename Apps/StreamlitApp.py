@@ -134,7 +134,7 @@ class PLTeamQuiz:
         correct = set()
         for guess in normalized_guesses:
             match, score, _ = process.extractOne(guess, normalized_answers, scorer=fuzz.token_sort_ratio)
-            if score >= 85:
+            if score >= 80:
                 correct.add(guess)
 
         incorrect = set(normalized_guesses) - correct
