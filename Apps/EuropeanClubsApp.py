@@ -19,7 +19,7 @@ class EuroQuiz:
         """Load player data from CSV."""
         try:
             # Load data from GitHub raw file
-            url = "https://raw.githubusercontent.com/JulianB22/Football/main/data/european_leagues_players.csv"
+            url = "https://raw.githubusercontent.com/JulianB22/Football/main/data/final_all_european_players.csv"
             response = requests.get(url)
             response.raise_for_status()  # Raise an exception for bad status codes
             
