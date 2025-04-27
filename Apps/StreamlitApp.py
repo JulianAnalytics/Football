@@ -7,7 +7,7 @@ import unicodedata
 class PLTeamQuiz:
     def __init__(self):
         st.set_page_config(
-            page_title="Premier League Team Connection Quiz",
+            page_title="Squad Connections Quiz",
             page_icon="⚽",
             layout="wide"
         )
