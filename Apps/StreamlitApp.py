@@ -8,7 +8,7 @@ class PLTeamQuiz:
     def __init__(self):
         st.set_page_config(
             page_title="Premier League Squad Connections Quiz",
-            page_icon="https://upload.wikimedia.org/wikipedia/en/f/f2/Premier_League_Logo.svg",  # Replace emoji with Premier League logo
+            page_icon="https://upload.wikimedia.org/wikipedia/en/f/f2/Premier_League_Logo.svg",  # Keep the Premier League logo as page icon
             layout="wide"
         )
         self.load_data()
@@ -57,11 +57,12 @@ class PLTeamQuiz:
 
     def create_ui(self):
         """Create the Streamlit user interface."""
+        # Display the Premier League logo above the title
         st.markdown("""
-            <h1 style="display: inline-block;">
-                <img src="https://upload.wikimedia.org/wikipedia/en/f/f2/Premier_League_Logo.svg" width="150" style="vertical-align: middle; margin-right: 10px;">
-                Squad Connections Quiz
-            </h1>
+            <div style="text-align: center;">
+                <img src="https://upload.wikimedia.org/wikipedia/en/f/f2/Premier_League_Logo.svg" width="200">
+            </div>
+            <h1 style="text-align: center;">Squad Connections Quiz</h1>
         """, unsafe_allow_html=True)
 
         st.markdown("""
@@ -167,4 +168,3 @@ class PLTeamQuiz:
 
 if __name__ == "__main__":
     quiz = PLTeamQuiz()
-
