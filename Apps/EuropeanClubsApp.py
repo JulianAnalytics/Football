@@ -110,8 +110,12 @@ class EuroQuiz:
         team1_display = self.team_map.get(team1_norm, team1_norm.title())
         team2_display = self.team_map.get(team2_norm, team2_norm.title())
 
-        # Modified message with bold number of players
-        st.info(f"🎯 Find <strong>{len(st.session_state.common_players)}</strong> players who have played for both {team1_display} and {team2_display}", unsafe_allow_html=True)
+        # Check the number of common players before rendering the info
+        num_players = len(st.session_state.common_players)
+        st.write(f"DEBUG: Number of common players: {num_players}")  # Debug message
+
+        # Update message with bold text for player count
+        st.info(f"🎯 Find <strong>{num_players}</strong> players who have played for both {team1_display} and {team2_display}", unsafe_allow_html=True)
 
     def show_quiz_interface(self):
         col1, col2, col3 = st.columns([2, 1, 1])
@@ -168,4 +172,5 @@ class EuroQuiz:
 
 if __name__ == "__main__":
     quiz = EuroQuiz()
+
 
