@@ -25,12 +25,31 @@ class PLTeamQuiz:
                     color: #000000;
                 }
 
+                /* Ensure all Streamlit widgets use the same font and background on all devices */
                 .stButton>button, .stSelectbox, .stTextInput, .stMetric, .stMarkdown, .stProgress, .stError, .stSuccess, .stInfo {
                     font-family: Rockwell, 'Serifa', Georgia, serif;
+                    background-color: rgba(255, 255, 255, 0.85);
                 }
 
                 input, .stSelectbox, textarea {
                     background-color: rgba(255, 255, 255, 0.85);
+                }
+
+                /* Style the selectboxes consistently */
+                .stSelectbox div {
+                    padding: 10px;
+                }
+
+                /* Ensure mobile compatibility */
+                @media screen and (max-width: 600px) {
+                    .stSelectbox {
+                        font-size: 16px;
+                        padding: 10px;
+                    }
+
+                    .stTextInput input, .stSelectbox div {
+                        font-size: 16px;
+                    }
                 }
             </style>
         """, unsafe_allow_html=True)
