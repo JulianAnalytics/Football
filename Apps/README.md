@@ -1,6 +1,6 @@
-# Team Connection Quiz
+# Player in Common - a football team connection quiz game
 
-A fun quiz game that challenges your knowledge of european football! Try to name players who have played for both of your selected teams.
+A fun quiz game that challenges your knowledge of European football! Try to name players who have played for both of your selected teams.
 
 ## 🎮 Play Now
 
