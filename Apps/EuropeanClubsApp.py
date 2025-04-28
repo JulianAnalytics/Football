@@ -4,6 +4,7 @@ import requests
 from io import StringIO
 import unicodedata
 from rapidfuzz import fuzz
+import random  # ✅ Added for random selection
 
 class EuroQuiz:
     def __init__(self):
@@ -48,6 +49,10 @@ class EuroQuiz:
             st.session_state.show_answers = False
         if 'correct_count' not in st.session_state:
             st.session_state.correct_count = 0
+        if 'team1' not in st.session_state:
+            st.session_state.team1 = "Arsenal"
+        if 'team2' not in st.session_state:
+            st.session_state.team2 = "Barcelona"
 
     def find_players_for_team(self, team_normalized):
         team_df = self.df[self.df['Squad_normalized'] == team_normalized]
@@ -75,17 +80,21 @@ class EuroQuiz:
         3. Get points for correct guesses!
         """)
 
-        default_team1 = "Arsenal"
-        default_team2 = "Barcelona"
-        default_team1_normalized = default_team1.casefold()
-        default_team2_normalized = default_team2.casefold()
-
         col1, col2 = st.columns(2)
 
         with col1:
-            team1_display = st.selectbox("Select First Team:", [self.team_map[t] for t in self.all_teams], key='team1', index=self.all_teams.index(default_team1_normalized))
+            team1_display = st.selectbox("Select First Team:", [self.team_map[t] for t in self.all_teams],
+                                         key='team1')
         with col2:
-            team2_display = st.selectbox("Select Second Team:", [self.team_map[t] for t in self.all_teams], key='team2', index=self.all_teams.index(default_team2_normalized))
+            team2_display = st.selectbox("Select Second Team:", [self.team_map[t] for t in self.all_teams],
+                                         key='team2')
+
+        # 🎲 Random Team Button
+        if st.button("🎲 Random Team Pair"):
+            team1_norm, team2_norm = random.sample(self.all_teams, 2)
+            st.session_state.team1 = self.team_map[team1_norm]
+            st.session_state.team2 = self.team_map[team2_norm]
+            st.experimental_rerun()
 
         team1_normalized = self.get_normalized_team_name(team1_display)
         team2_normalized = self.get_normalized_team_name(team2_display)
