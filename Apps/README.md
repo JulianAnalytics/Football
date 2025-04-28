@@ -1,4 +1,4 @@
-# Player in Common - a football team connection quiz game
+# Players in Common - a football team connection quiz game
 
 A fun quiz game that challenges your knowledge of European football! Try to name players who have played for both of your selected teams.
 
