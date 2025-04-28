@@ -4,7 +4,7 @@ A fun quiz game that challenges your knowledge of european football! Try to name
 
 ## 🎮 Play Now
 
-You can play the game here: [Premier League Squad Game](https://premier-league-squad-game.streamlit.app/)
+You can play the game here: [Players in Common](https://players-in-common.streamlit.app)
 
 ## 🎯 How to Play
 
