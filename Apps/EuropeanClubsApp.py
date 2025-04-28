@@ -48,8 +48,6 @@ class EuroQuiz:
             st.session_state.show_answers = False
         if 'correct_count' not in st.session_state:
             st.session_state.correct_count = 0
-        if 'last_selected_teams' not in st.session_state:
-            st.session_state.last_selected_teams = (None, None)
 
     def find_players_for_team(self, team_normalized):
         team_df = self.df[self.df['Squad_normalized'] == team_normalized]
@@ -85,21 +83,18 @@ class EuroQuiz:
         col1, col2 = st.columns(2)
 
         with col1:
-            team1_display = st.selectbox("Select First Team:", [self.team_map[t] for t in self.all_teams],
-                                         key='team1', index=self.all_teams.index(default_team1_normalized))
+            team1_display = st.selectbox("Select First Team:", [self.team_map[t] for t in self.all_teams], key='team1', index=self.all_teams.index(default_team1_normalized))
         with col2:
-            team2_display = st.selectbox("Select Second Team:", [self.team_map[t] for t in self.all_teams],
-                                         key='team2', index=self.all_teams.index(default_team2_normalized))
+            team2_display = st.selectbox("Select Second Team:", [self.team_map[t] for t in self.all_teams], key='team2', index=self.all_teams.index(default_team2_normalized))
 
         team1_normalized = self.get_normalized_team_name(team1_display)
         team2_normalized = self.get_normalized_team_name(team2_display)
 
-        if team1_normalized != team2_normalized:
-            if st.session_state.last_selected_teams != (team1_normalized, team2_normalized):
+        if st.button("Find Connections", type="primary"):
+            if team1_normalized == team2_normalized:
+                st.error("Please select different teams")
+            else:
                 self.find_connections(team1_normalized, team2_normalized)
-                st.session_state.last_selected_teams = (team1_normalized, team2_normalized)
-        else:
-            st.warning("Please select two different teams")
 
         if st.session_state.common_players:
             self.show_quiz_interface()
@@ -207,4 +202,5 @@ class EuroQuiz:
 
 
 if __name__ == "__main__":
+    quiz = EuroQuiz()
 
