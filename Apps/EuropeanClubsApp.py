@@ -27,6 +27,7 @@ class EuroQuiz:
 
             self.df['Squad'] = self.df['Squad'].astype(str).str.strip()
             self.df['Squad_normalized'] = self.df['Squad'].str.casefold()
+
             self.df['YearBorn'] = pd.to_numeric(self.df['Born'], errors='coerce', downcast='integer')
 
             self.team_map = dict(zip(self.df['Squad_normalized'], self.df['Squad']))
@@ -89,8 +90,11 @@ class EuroQuiz:
         team1_normalized = self.get_normalized_team_name(team1_display)
         team2_normalized = self.get_normalized_team_name(team2_display)
 
-        if team1_normalized != team2_normalized:
-            self.find_connections(team1_normalized, team2_normalized)
+        if st.button("Find Connections", type="primary"):
+            if team1_normalized == team2_normalized:
+                st.error("Please select different teams")
+            else:
+                self.find_connections(team1_normalized, team2_normalized)
 
         if st.session_state.common_players:
             self.show_quiz_interface()
@@ -126,35 +130,32 @@ class EuroQuiz:
         col1, col2, col3 = st.columns([2, 1, 1])
 
         with col1:
-            guess = st.text_input("", placeholder="Enter a player name", key="guess_input")
+            guess = st.text_input("Enter a player name:", key="guess_input")
 
         with col2:
-            submit_clicked = st.button("Submit Guess", type="primary")
+            if st.button("Submit Guess", type="primary"):
+                if guess:
+                    guess_normalized = self.normalize_string(guess.strip().lower())
+                    already_guessed = [self.normalize_string(g.lower()) for g in st.session_state.guesses]
+
+                    if guess_normalized not in already_guessed:
+                        st.session_state.guesses.append(guess)
+
+                        matched = False
+                        for player, _ in st.session_state.common_raw:
+                            player_norm = self.normalize_string(player.lower())
+                            surname = self.normalize_string(player.split()[-1].lower())
+                            if (fuzz.token_set_ratio(guess_normalized, player_norm) >= 90 or
+                                fuzz.token_set_ratio(guess_normalized, surname) >= 90):
+                                matched = True
+                                break
+
+                        if matched:
+                            st.session_state.correct_count += 1
 
         with col3:
-            toggle_clicked = st.button("Show/Hide Answers", type="secondary")
-
-        if submit_clicked and guess:
-            guess_normalized = self.normalize_string(guess.strip().lower())
-            already_guessed = [self.normalize_string(g.lower()) for g in st.session_state.guesses]
-
-            if guess_normalized not in already_guessed:
-                st.session_state.guesses.append(guess)
-
-                matched = False
-                for player, _ in st.session_state.common_raw:
-                    player_norm = self.normalize_string(player.lower())
-                    surname = self.normalize_string(player.split()[-1].lower())
-                    if (fuzz.token_set_ratio(guess_normalized, player_norm) >= 90 or
-                        fuzz.token_set_ratio(guess_normalized, surname) >= 90):
-                        matched = True
-                        break
-
-                if matched:
-                    st.session_state.correct_count += 1
-
-        if toggle_clicked:
-            st.session_state.show_answers = not st.session_state.show_answers
+            if st.button("Show/Hide Answers", type="secondary"):
+                st.session_state.show_answers = not st.session_state.show_answers
 
         if st.session_state.guesses:
             self.show_results()
@@ -202,4 +203,3 @@ class EuroQuiz:
 
 if __name__ == "__main__":
     quiz = EuroQuiz()
-
