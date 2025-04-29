@@ -48,6 +48,8 @@ class EuroQuiz:
             st.session_state.show_answers = False
         if 'correct_count' not in st.session_state:
             st.session_state.correct_count = 0
+        if 'submitted_guess' not in st.session_state:
+            st.session_state.submitted_guess = ""
 
     def find_players_for_team(self, team_normalized):
         team_df = self.df[self.df['Squad_normalized'] == team_normalized]
@@ -130,28 +132,10 @@ class EuroQuiz:
         col1, col2, col3 = st.columns([2, 1, 1])
 
         with col1:
-            guess = st.text_input("Enter a player name:", key="guess_input")
+            guess = st.text_input("Enter a player name:", key="guess_input", on_change=self.submit_guess)
 
         with col2:
-            if st.button("Submit Guess", type="primary"):
-                if guess:
-                    guess_normalized = self.normalize_string(guess.strip().lower())
-                    already_guessed = [self.normalize_string(g.lower()) for g in st.session_state.guesses]
-
-                    if guess_normalized not in already_guessed:
-                        st.session_state.guesses.append(guess)
-
-                        matched = False
-                        for player, _ in st.session_state.common_raw:
-                            player_norm = self.normalize_string(player.lower())
-                            surname = self.normalize_string(player.split()[-1].lower())
-                            if (fuzz.token_set_ratio(guess_normalized, player_norm) >= 90 or
-                                fuzz.token_set_ratio(guess_normalized, surname) >= 90):
-                                matched = True
-                                break
-
-                        if matched:
-                            st.session_state.correct_count += 1
+            st.button("Submit Guess", on_click=self.submit_guess, type="primary")
 
         with col3:
             if st.button("Show/Hide Answers", type="secondary"):
@@ -164,6 +148,31 @@ class EuroQuiz:
             st.write("### 📝 All Players")
             for player in st.session_state.common_players:
                 st.write(f"• {player}")
+
+    def submit_guess(self):
+        guess = st.session_state.get("guess_input", "").strip()
+        if not guess:
+            return
+
+        guess_normalized = self.normalize_string(guess.lower())
+        already_guessed = [self.normalize_string(g.lower()) for g in st.session_state.guesses]
+
+        if guess_normalized in already_guessed:
+            return
+
+        st.session_state.guesses.append(guess)
+
+        matched = False
+        for player, _ in st.session_state.common_raw:
+            player_norm = self.normalize_string(player.lower())
+            surname = self.normalize_string(player.split()[-1].lower())
+            if (fuzz.token_set_ratio(guess_normalized, player_norm) >= 90 or
+                fuzz.token_set_ratio(guess_normalized, surname) >= 90):
+                matched = True
+                break
+
+        if matched:
+            st.session_state.correct_count += 1
 
     def show_results(self):
         correct_names = {self.normalize_string(name.lower()) for name, _ in st.session_state.common_raw}
@@ -200,6 +209,6 @@ class EuroQuiz:
             else:
                 st.error(f"❌ {guess}")
 
-
 if __name__ == "__main__":
-    quiz = EuroQuiz()
+    EuroQuiz()
+
