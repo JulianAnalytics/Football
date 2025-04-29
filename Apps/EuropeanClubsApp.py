@@ -130,11 +130,11 @@ class EuroQuiz:
         col1, col2, col3 = st.columns([2, 1, 1])
 
         with col1:
-            with st.form(key="guess_form", clear_on_submit=True):
-                guess = st.text_input("Enter a player name:", key="guess_input")
-                submitted = st.form_submit_button("Submit Guess")
+            guess = st.text_input("Enter a player name:", key="guess_input")
 
-                if submitted and guess:
+        with col2:
+            if st.button("Submit Guess", type="primary"):
+                if guess:
                     guess_normalized = self.normalize_string(guess.strip().lower())
                     already_guessed = [self.normalize_string(g.lower()) for g in st.session_state.guesses]
 
@@ -203,3 +203,4 @@ class EuroQuiz:
 
 if __name__ == "__main__":
     quiz = EuroQuiz()
+
