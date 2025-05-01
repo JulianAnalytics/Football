@@ -38,20 +38,19 @@ class EuroQuiz:
             st.stop()
 
     def initialize_session_state(self):
-        if 'common_players' not in st.session_state:
-            st.session_state.common_players = []
-        if 'common_raw' not in st.session_state:
-            st.session_state.common_raw = set()
-        if 'guesses' not in st.session_state:
-            st.session_state.guesses = []
-        if 'show_answers' not in st.session_state:
-            st.session_state.show_answers = False
-        if 'correct_count' not in st.session_state:
-            st.session_state.correct_count = 0
-        if 'team1' not in st.session_state:
-            st.session_state.team1 = "Arsenal"
-        if 'team2' not in st.session_state:
-            st.session_state.team2 = "Barcelona"
+        defaults = {
+            'common_players': [],
+            'common_raw': set(),
+            'guesses': [],
+            'show_answers': False,
+            'correct_count': 0,
+            'team1': "Arsenal",
+            'team2': "Barcelona",
+            'randomize_triggered': False
+        }
+        for key, value in defaults.items():
+            if key not in st.session_state:
+                st.session_state[key] = value
 
     def find_players_for_team(self, team_normalized):
         team_df = self.df[self.df['Squad_normalized'] == team_normalized]
@@ -86,10 +85,12 @@ class EuroQuiz:
             "Aston Villa", "Newcastle Utd", "Parma", "Lazio"
         ]
 
-        default_team1 = st.session_state.get("team1", "Arsenal")
-        default_team2 = st.session_state.get("team2", "Barcelona")
-        default_team1_normalized = default_team1.casefold()
-        default_team2_normalized = default_team2.casefold()
+        # If the random button was clicked in the last run, randomise teams
+        if st.session_state.randomize_triggered:
+            team1, team2 = random.sample(custom_team_list, 2)
+            st.session_state.team1 = team1
+            st.session_state.team2 = team2
+            st.session_state.randomize_triggered = False
 
         col1, col2 = st.columns(2)
 
@@ -97,23 +98,21 @@ class EuroQuiz:
             team1_display = st.selectbox(
                 "Select First Team:",
                 [self.team_map[t] for t in self.all_teams],
-                index=self.all_teams.index(default_team1_normalized) if default_team1_normalized in self.all_teams else 0
+                index=self.all_teams.index(st.session_state.team1.casefold())
             )
         with col2:
             team2_display = st.selectbox(
                 "Select Second Team:",
                 [self.team_map[t] for t in self.all_teams],
-                index=self.all_teams.index(default_team2_normalized) if default_team2_normalized in self.all_teams else 1
+                index=self.all_teams.index(st.session_state.team2.casefold())
             )
 
-        # Update session state manually to avoid key conflicts
         st.session_state.team1 = team1_display
         st.session_state.team2 = team2_display
 
+        # Randomise button (safe)
         if st.button("🎲 Randomise Teams"):
-            team1, team2 = random.sample(custom_team_list, 2)
-            st.session_state.team1 = team1
-            st.session_state.team2 = team2
+            st.session_state.randomize_triggered = True
             st.experimental_rerun()
 
         team1_normalized = self.get_normalized_team_name(team1_display)
@@ -149,10 +148,6 @@ class EuroQuiz:
         st.session_state.guesses = []
         st.session_state.show_answers = False
         st.session_state.correct_count = 0
-
-        if not st.session_state.common_players:
-            st.warning("No players found who played for both teams.")
-            return
 
         team1_display = self.team_map.get(team1_norm, team1_norm.title())
         team2_display = self.team_map.get(team2_norm, team2_norm.title())
