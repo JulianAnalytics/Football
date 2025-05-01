@@ -93,6 +93,9 @@ class EuroQuiz:
             st.session_state.team1 = team1
             st.session_state.team2 = team2
 
+            # Clear previous guesses when teams are randomized
+            st.session_state.guesses = []
+
         # Use session state for default values
         default_team1 = st.session_state.get("team1", "Arsenal")
         default_team2 = st.session_state.get("team2", "Barcelona")
@@ -116,6 +119,10 @@ class EuroQuiz:
 
         team1_normalized = self.get_normalized_team_name(team1_display)
         team2_normalized = self.get_normalized_team_name(team2_display)
+
+        # Reset guesses when teams are changed
+        if team1_normalized != default_team1_normalized or team2_normalized != default_team2_normalized:
+            st.session_state.guesses = []
 
         # Call find_connections immediately after team selection or randomization
         if team1_normalized != team2_normalized:
@@ -225,4 +232,5 @@ class EuroQuiz:
 
 if __name__ == "__main__":
     quiz = EuroQuiz()
+
 
