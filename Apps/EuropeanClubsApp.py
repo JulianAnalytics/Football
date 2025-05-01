@@ -115,7 +115,7 @@ class EuroQuiz:
         # Randomise button (safe)
         if st.button("🎲 Randomise Teams"):
             st.session_state.randomize_triggered = True
-            st.experimental_rerun()  # Trigger rerun after randomizing teams
+            # Avoid calling rerun, instead allow session state to trigger updates
 
         team1_normalized = self.get_normalized_team_name(team1_display)
         team2_normalized = self.get_normalized_team_name(team2_display)
