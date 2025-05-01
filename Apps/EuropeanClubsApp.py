@@ -79,21 +79,14 @@ class EuroQuiz:
         3. Get points for correct guesses!
         """)
 
-        # List of valid teams for random selection
         custom_team_list = [
             "Arsenal", "Chelsea", "Real Madrid", "Bayern Munich", "Athletico Madrid",
-            "Dortmund", "Milan", "Inter", "Liverpool", "Manchester City", "Manchester Utd",
-            "Roma", "Tottenham", "Valencia", "Paris S-G", "Marseille", "Juventus",
-            "Aston Villa", "Newcastle Utd", "Parma", "Lazio"
+            "Dortmund", "Milan", "Inter", "Liverpool", "Manchester City", 
+            "Manchester Utd", "Roma", "Tottenham", "Valencia", "Paris S-G", 
+            "Marseille", "Juventus", "Aston Villa", "Newcastle Utd", "Parma", 
+            "Lazio", "Everton", "Sevilla", "Lyon", "Monaco", "Napoli"
         ]
 
-        # Randomise button
-        if st.button("🎲 Randomise Teams"):
-            team1, team2 = random.sample(custom_team_list, 2)
-            st.session_state.team1 = team1
-            st.session_state.team2 = team2
-
-        # Use session state for default values
         default_team1 = st.session_state.get("team1", "Arsenal")
         default_team2 = st.session_state.get("team2", "Barcelona")
         default_team1_normalized = default_team1.casefold()
@@ -113,6 +106,13 @@ class EuroQuiz:
                 key='team2',
                 index=self.all_teams.index(default_team2_normalized) if default_team2_normalized in self.all_teams else 1
             )
+
+        # 🎲 Randomise Teams button placed BELOW the select boxes
+        if st.button("🎲 Randomise Teams"):
+            team1, team2 = random.sample(custom_team_list, 2)
+            st.session_state.team1 = team1
+            st.session_state.team2 = team2
+            st.experimental_rerun()
 
         team1_normalized = self.get_normalized_team_name(team1_display)
         team2_normalized = self.get_normalized_team_name(team2_display)
