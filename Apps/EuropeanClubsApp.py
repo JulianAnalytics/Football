@@ -91,7 +91,7 @@ class EuroQuiz:
             team1, team2 = random.sample(custom_team_list, 2)
             st.session_state.team1 = team1
             st.session_state.team2 = team2
-            st.session_state.randomize_triggered = False
+            st.session_state.randomize_triggered = False  # Reset randomization trigger
             st.session_state.quiz_started = False  # Reset quiz state
 
         col1, col2 = st.columns(2)
@@ -232,4 +232,3 @@ class EuroQuiz:
 
 if __name__ == "__main__":
     quiz = EuroQuiz()
-
