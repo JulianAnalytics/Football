@@ -94,19 +94,22 @@ class EuroQuiz:
         col1, col2 = st.columns(2)
 
         with col1:
-            team1_display = st.selectbox("Select First Team:",
+            team1_display = st.selectbox(
+                "Select First Team:",
                 [self.team_map[t] for t in self.all_teams],
-                key='team1',
                 index=self.all_teams.index(default_team1_normalized) if default_team1_normalized in self.all_teams else 0
             )
         with col2:
-            team2_display = st.selectbox("Select Second Team:",
+            team2_display = st.selectbox(
+                "Select Second Team:",
                 [self.team_map[t] for t in self.all_teams],
-                key='team2',
                 index=self.all_teams.index(default_team2_normalized) if default_team2_normalized in self.all_teams else 1
             )
 
-        # 🎲 Randomise Teams button moved below selectboxes
+        # Update session state manually to avoid key conflicts
+        st.session_state.team1 = team1_display
+        st.session_state.team2 = team2_display
+
         if st.button("🎲 Randomise Teams"):
             team1, team2 = random.sample(custom_team_list, 2)
             st.session_state.team1 = team1
@@ -146,6 +149,10 @@ class EuroQuiz:
         st.session_state.guesses = []
         st.session_state.show_answers = False
         st.session_state.correct_count = 0
+
+        if not st.session_state.common_players:
+            st.warning("No players found who played for both teams.")
+            return
 
         team1_display = self.team_map.get(team1_norm, team1_norm.title())
         team2_display = self.team_map.get(team2_norm, team2_norm.title())
