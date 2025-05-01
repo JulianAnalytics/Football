@@ -28,7 +28,6 @@ class EuroQuiz:
 
             self.df['Squad'] = self.df['Squad'].astype(str).str.strip()
             self.df['Squad_normalized'] = self.df['Squad'].str.casefold()
-
             self.df['YearBorn'] = pd.to_numeric(self.df['Born'], errors='coerce', downcast='integer')
 
             self.team_map = dict(zip(self.df['Squad_normalized'], self.df['Squad']))
@@ -80,7 +79,7 @@ class EuroQuiz:
         3. Get points for correct guesses!
         """)
 
-        # Team list for Randomise feature
+        # List of valid teams for random selection
         custom_team_list = [
             "Arsenal", "Chelsea", "Real Madrid", "Bayern Munich", "Athletico Madrid",
             "Dortmund", "Milan", "Inter", "Liverpool", "Manchester City", "Manchester Utd",
@@ -88,24 +87,31 @@ class EuroQuiz:
             "Aston Villa", "Newcastle Utd", "Parma", "Lazio"
         ]
 
+        # Randomise button
         if st.button("🎲 Randomise Teams"):
             team1, team2 = random.sample(custom_team_list, 2)
             st.session_state.team1 = team1
             st.session_state.team2 = team2
 
+        # Use session state for default values
+        default_team1 = st.session_state.get("team1", "Arsenal")
+        default_team2 = st.session_state.get("team2", "Barcelona")
+        default_team1_normalized = default_team1.casefold()
+        default_team2_normalized = default_team2.casefold()
+
         col1, col2 = st.columns(2)
 
         with col1:
-            team1_display = st.selectbox(
-                "Select First Team:",
+            team1_display = st.selectbox("Select First Team:",
                 [self.team_map[t] for t in self.all_teams],
-                key='team1'
+                key='team1',
+                index=self.all_teams.index(default_team1_normalized) if default_team1_normalized in self.all_teams else 0
             )
         with col2:
-            team2_display = st.selectbox(
-                "Select Second Team:",
+            team2_display = st.selectbox("Select Second Team:",
                 [self.team_map[t] for t in self.all_teams],
-                key='team2'
+                key='team2',
+                index=self.all_teams.index(default_team2_normalized) if default_team2_normalized in self.all_teams else 1
             )
 
         team1_normalized = self.get_normalized_team_name(team1_display)
@@ -215,10 +221,11 @@ class EuroQuiz:
             st.metric("🎯 Remaining", len(st.session_state.common_players) - len(correct_guesses))
 
         st.write("### Your Guesses")
-        for guess in st.session_state.gu
-
-
+        for guess in st.session_state.guesses:
+            if guess in correct_guesses:
+                st.success(f"✅ {guess}")
+            else:
+                st.error(f"❌ {guess}")
 
 if __name__ == "__main__":
     quiz = EuroQuiz()
-
