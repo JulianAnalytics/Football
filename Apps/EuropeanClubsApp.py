@@ -38,20 +38,20 @@ class EuroQuiz:
             st.stop()
 
     def initialize_session_state(self):
-        defaults = {
-            'common_players': [],
-            'common_raw': set(),
-            'guesses': [],
-            'show_answers': False,
-            'correct_count': 0,
-            'team1': "Arsenal",
-            'team2': "Barcelona",
-            'randomize_triggered': False,
-            'quiz_started': False  # Track whether Find Connections has been pressed
-        }
-        for key, value in defaults.items():
-            if key not in st.session_state:
-                st.session_state[key] = value
+        if 'common_players' not in st.session_state:
+            st.session_state.common_players = []
+        if 'common_raw' not in st.session_state:
+            st.session_state.common_raw = set()
+        if 'guesses' not in st.session_state:
+            st.session_state.guesses = []
+        if 'show_answers' not in st.session_state:
+            st.session_state.show_answers = False
+        if 'correct_count' not in st.session_state:
+            st.session_state.correct_count = 0
+        if 'team1' not in st.session_state:
+            st.session_state.team1 = "Arsenal"
+        if 'team2' not in st.session_state:
+            st.session_state.team2 = "Barcelona"
 
     def find_players_for_team(self, team_normalized):
         team_df = self.df[self.df['Squad_normalized'] == team_normalized]
@@ -79,6 +79,7 @@ class EuroQuiz:
         3. Get points for correct guesses!
         """)
 
+        # List of valid teams for random selection
         custom_team_list = [
             "Arsenal", "Chelsea", "Real Madrid", "Bayern Munich", "Athletico Madrid",
             "Dortmund", "Milan", "Inter", "Liverpool", "Manchester City", "Manchester Utd",
@@ -86,45 +87,41 @@ class EuroQuiz:
             "Aston Villa", "Newcastle Utd", "Parma", "Lazio"
         ]
 
-        # If the random button was clicked in the last run, randomize teams
-        if st.session_state.randomize_triggered:
+        # Randomise button
+        if st.button("🎲 Randomise Teams"):
             team1, team2 = random.sample(custom_team_list, 2)
             st.session_state.team1 = team1
             st.session_state.team2 = team2
-            st.session_state.randomize_triggered = False  # Reset randomization trigger
-            st.session_state.quiz_started = False  # Reset quiz state
+
+        # Use session state for default values
+        default_team1 = st.session_state.get("team1", "Arsenal")
+        default_team2 = st.session_state.get("team2", "Barcelona")
+        default_team1_normalized = default_team1.casefold()
+        default_team2_normalized = default_team2.casefold()
 
         col1, col2 = st.columns(2)
 
-        # Ensure teams are still valid (check if the selected team exists in the team list)
         with col1:
-            team1_display = st.selectbox(
-                "Select First Team:",
+            team1_display = st.selectbox("Select First Team:",
                 [self.team_map[t] for t in self.all_teams],
-                index=self.get_team_index(st.session_state.team1)  # Get valid index
+                key='team1',
+                index=self.all_teams.index(default_team1_normalized) if default_team1_normalized in self.all_teams else 0
             )
         with col2:
-            team2_display = st.selectbox(
-                "Select Second Team:",
+            team2_display = st.selectbox("Select Second Team:",
                 [self.team_map[t] for t in self.all_teams],
-                index=self.get_team_index(st.session_state.team2)  # Get valid index
+                key='team2',
+                index=self.all_teams.index(default_team2_normalized) if default_team2_normalized in self.all_teams else 1
             )
-
-        st.session_state.team1 = team1_display
-        st.session_state.team2 = team2_display
-
-        # Randomise button (safe)
-        if st.button("🎲 Randomise Teams"):
-            st.session_state.randomize_triggered = True
-            # Avoid calling rerun, instead allow session state to trigger updates
 
         team1_normalized = self.get_normalized_team_name(team1_display)
         team2_normalized = self.get_normalized_team_name(team2_display)
 
-        # Display number of common players automatically when teams are selected
-        self.find_connections(team1_normalized, team2_normalized)
+        # Call find_connections immediately after team selection or randomization
+        if team1_normalized != team2_normalized:
+            self.find_connections(team1_normalized, team2_normalized)
 
-        if st.session_state.common_players and st.session_state.quiz_started:
+        if st.session_state.common_players:
             self.show_quiz_interface()
 
     def get_normalized_team_name(self, team_display_name):
@@ -132,16 +129,6 @@ class EuroQuiz:
             if disp == team_display_name:
                 return norm
         return team_display_name.casefold()
-
-    def get_team_index(self, team_name):
-        """
-        Safely returns the index of a team name, defaulting to the first valid team if not found.
-        """
-        try:
-            return self.all_teams.index(team_name.casefold())
-        except ValueError:
-            # If the team is not found, return index for the first team
-            return 0
 
     def find_connections(self, team1_norm, team2_norm):
         team1_players = self.find_players_for_team(team1_norm)
@@ -158,11 +145,11 @@ class EuroQuiz:
         st.session_state.guesses = []
         st.session_state.show_answers = False
         st.session_state.correct_count = 0
-        st.session_state.quiz_started = True  # Mark quiz as started
 
         team1_display = self.team_map.get(team1_norm, team1_norm.title())
         team2_display = self.team_map.get(team2_norm, team2_norm.title())
 
+        # Display the number of common players immediately
         st.info(f"🎯 Find {len(st.session_state.common_players)} players who have played for both {team1_display} and {team2_display}")
 
     def show_quiz_interface(self):
@@ -192,19 +179,17 @@ class EuroQuiz:
                         if matched:
                             st.session_state.correct_count += 1
 
-        # Only show the guessing interface if the quiz has been started
-        if st.session_state.quiz_started:
-            with col3:
-                if st.button("Show/Hide Answers", type="secondary"):
-                    st.session_state.show_answers = not st.session_state.show_answers
+        with col3:
+            if st.button("Show/Hide Answers", type="secondary"):
+                st.session_state.show_answers = not st.session_state.show_answers
 
-            if st.session_state.guesses:
-                self.show_results()
+        if st.session_state.guesses:
+            self.show_results()
 
-            if st.session_state.show_answers:
-                st.write("### 📝 All Players")
-                for player in st.session_state.common_players:
-                    st.write(f"• {player}")
+        if st.session_state.show_answers:
+            st.write("### 📝 All Players")
+            for player in st.session_state.common_players:
+                st.write(f"• {player}")
 
     def show_results(self):
         correct_names = {self.normalize_string(name.lower()) for name, _ in st.session_state.common_raw}
@@ -243,4 +228,5 @@ class EuroQuiz:
 
 if __name__ == "__main__":
     quiz = EuroQuiz()
+
 
