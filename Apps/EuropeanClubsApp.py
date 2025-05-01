@@ -142,9 +142,6 @@ class EuroQuiz:
 
         st.session_state.common_raw = common
         st.session_state.common_players = sorted([p for p, y in common if pd.notna(y)])
-        st.session_state.guesses = []
-        st.session_state.show_answers = False
-        st.session_state.correct_count = 0
 
         team1_display = self.team_map.get(team1_norm, team1_norm.title())
         team2_display = self.team_map.get(team2_norm, team2_norm.title())
@@ -228,5 +225,4 @@ class EuroQuiz:
 
 if __name__ == "__main__":
     quiz = EuroQuiz()
-
 
