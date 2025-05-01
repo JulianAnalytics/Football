@@ -84,7 +84,7 @@ class EuroQuiz:
             "Arsenal", "Chelsea", "Real Madrid", "Bayern Munich", "Athletico Madrid",
             "Dortmund", "Milan", "Inter", "Liverpool", "Manchester City", "Manchester Utd",
             "Roma", "Tottenham", "Valencia", "Paris S-G", "Marseille", "Juventus",
-            "Aston Villa", "Newcastle Utd", "Parma", "Lazio"
+            "Aston Villa", "Newcastle Utd", "Lazio"
         ]
 
         # Randomise button
