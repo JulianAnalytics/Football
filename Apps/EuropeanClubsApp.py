@@ -96,17 +96,18 @@ class EuroQuiz:
 
         col1, col2 = st.columns(2)
 
+        # Ensure teams are still valid (check if the selected team exists in the team list)
         with col1:
             team1_display = st.selectbox(
                 "Select First Team:",
                 [self.team_map[t] for t in self.all_teams],
-                index=self.all_teams.index(st.session_state.team1.casefold())
+                index=self.get_team_index(st.session_state.team1)  # Get valid index
             )
         with col2:
             team2_display = st.selectbox(
                 "Select Second Team:",
                 [self.team_map[t] for t in self.all_teams],
-                index=self.all_teams.index(st.session_state.team2.casefold())
+                index=self.get_team_index(st.session_state.team2)  # Get valid index
             )
 
         st.session_state.team1 = team1_display
@@ -131,6 +132,16 @@ class EuroQuiz:
             if disp == team_display_name:
                 return norm
         return team_display_name.casefold()
+
+    def get_team_index(self, team_name):
+        """
+        Safely returns the index of a team name, defaulting to the first valid team if not found.
+        """
+        try:
+            return self.all_teams.index(team_name.casefold())
+        except ValueError:
+            # If the team is not found, return index for the first team
+            return 0
 
     def find_connections(self, team1_norm, team2_norm):
         team1_players = self.find_players_for_team(team1_norm)
@@ -232,3 +243,4 @@ class EuroQuiz:
 
 if __name__ == "__main__":
     quiz = EuroQuiz()
+
