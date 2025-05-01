@@ -46,7 +46,8 @@ class EuroQuiz:
             'correct_count': 0,
             'team1': "Arsenal",
             'team2': "Barcelona",
-            'randomize_triggered': False
+            'randomize_triggered': False,
+            'quiz_started': False  # Track whether Find Connections has been pressed
         }
         for key, value in defaults.items():
             if key not in st.session_state:
@@ -91,6 +92,7 @@ class EuroQuiz:
             st.session_state.team1 = team1
             st.session_state.team2 = team2
             st.session_state.randomize_triggered = False
+            st.session_state.quiz_started = False  # Reset quiz state
 
         col1, col2 = st.columns(2)
 
@@ -125,7 +127,7 @@ class EuroQuiz:
             else:
                 self.find_connections(team1_normalized, team2_normalized)
 
-        if st.session_state.common_players:
+        if st.session_state.common_players and st.session_state.quiz_started:
             self.show_quiz_interface()
 
     def get_normalized_team_name(self, team_display_name):
@@ -149,6 +151,7 @@ class EuroQuiz:
         st.session_state.guesses = []
         st.session_state.show_answers = False
         st.session_state.correct_count = 0
+        st.session_state.quiz_started = True  # Mark quiz as started
 
         team1_display = self.team_map.get(team1_norm, team1_norm.title())
         team2_display = self.team_map.get(team2_norm, team2_norm.title())
@@ -182,17 +185,19 @@ class EuroQuiz:
                         if matched:
                             st.session_state.correct_count += 1
 
-        with col3:
-            if st.button("Show/Hide Answers", type="secondary"):
-                st.session_state.show_answers = not st.session_state.show_answers
+        # Only show the guessing interface if the quiz has been started and randomization hasn't just happened
+        if st.session_state.quiz_started:
+            with col3:
+                if st.button("Show/Hide Answers", type="secondary"):
+                    st.session_state.show_answers = not st.session_state.show_answers
 
-        if st.session_state.guesses:
-            self.show_results()
+            if st.session_state.guesses:
+                self.show_results()
 
-        if st.session_state.show_answers:
-            st.write("### 📝 All Players")
-            for player in st.session_state.common_players:
-                st.write(f"• {player}")
+            if st.session_state.show_answers:
+                st.write("### 📝 All Players")
+                for player in st.session_state.common_players:
+                    st.write(f"• {player}")
 
     def show_results(self):
         correct_names = {self.normalize_string(name.lower()) for name, _ in st.session_state.common_raw}
