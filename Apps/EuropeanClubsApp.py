@@ -74,7 +74,7 @@ class EuroQuiz:
 
         st.markdown("""
         ### How to Play:
-        1. Select two different teams from the top 5 European leagues  
+        1. Select or randomise two different teams from the top 5 European leagues
         2. Guess players who have played for both teams over the last 30 years  
         3. Get points for correct guesses!
         """)
