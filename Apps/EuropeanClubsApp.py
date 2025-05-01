@@ -85,7 +85,7 @@ class EuroQuiz:
             "Aston Villa", "Newcastle Utd", "Parma", "Lazio"
         ]
 
-        # If the random button was clicked in the last run, randomise teams
+        # If the random button was clicked in the last run, randomize teams
         if st.session_state.randomize_triggered:
             team1, team2 = random.sample(custom_team_list, 2)
             st.session_state.team1 = team1
@@ -113,7 +113,8 @@ class EuroQuiz:
         # Randomise button (safe)
         if st.button("🎲 Randomise Teams"):
             st.session_state.randomize_triggered = True
-            st.experimental_rerun()
+            # Do not call experimental_rerun() here as it can cause issues with re-running
+            # Instead, the page will update itself by setting the state to randomize teams
 
         team1_normalized = self.get_normalized_team_name(team1_display)
         team2_normalized = self.get_normalized_team_name(team2_display)
