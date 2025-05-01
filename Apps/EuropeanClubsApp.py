@@ -115,17 +115,13 @@ class EuroQuiz:
         # Randomise button (safe)
         if st.button("🎲 Randomise Teams"):
             st.session_state.randomize_triggered = True
-            # Do not call experimental_rerun() here as it can cause issues with re-running
-            # Instead, the page will update itself by setting the state to randomize teams
+            st.experimental_rerun()  # Trigger rerun after randomizing teams
 
         team1_normalized = self.get_normalized_team_name(team1_display)
         team2_normalized = self.get_normalized_team_name(team2_display)
 
-        if st.button("Find Connections", type="primary"):
-            if team1_normalized == team2_normalized:
-                st.error("Please select different teams")
-            else:
-                self.find_connections(team1_normalized, team2_normalized)
+        # Display number of common players automatically when teams are selected
+        self.find_connections(team1_normalized, team2_normalized)
 
         if st.session_state.common_players and st.session_state.quiz_started:
             self.show_quiz_interface()
@@ -185,7 +181,7 @@ class EuroQuiz:
                         if matched:
                             st.session_state.correct_count += 1
 
-        # Only show the guessing interface if the quiz has been started and randomization hasn't just happened
+        # Only show the guessing interface if the quiz has been started
         if st.session_state.quiz_started:
             with col3:
                 if st.button("Show/Hide Answers", type="secondary"):
@@ -236,3 +232,4 @@ class EuroQuiz:
 
 if __name__ == "__main__":
     quiz = EuroQuiz()
+
