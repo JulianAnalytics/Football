@@ -98,7 +98,7 @@ class EuroQuiz:
         # League to flag mapping
         league_flags = {
             "All": "🌍",  # World emoji for All
-            "Premier League": "🇬🇧",  # GB flag
+            "Premier League": "🏴󠁧󠁢󠁥󠁮󠁧󠁿",  # England flag
             "La Liga": "🇪🇸",  # ES flag
             "Bundesliga": "🇩🇪",  # DE flag
             "Serie A": "🇮🇹",  # IT flag
