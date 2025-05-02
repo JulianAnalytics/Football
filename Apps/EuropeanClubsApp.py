@@ -81,7 +81,7 @@ class EuroQuiz:
 
         # List of valid teams for random selection
         custom_team_list = [
-            "Arsenal", "Chelsea", "Real Madrid", "Bayern Munich", "Athletico Madrid",
+            "Arsenal", "Chelsea", "Real Madrid", "Bayern Munich", "Atlético Madrid",
             "Dortmund", "Milan", "Inter", "Liverpool", "Manchester City", "Manchester Utd",
             "Roma", "Tottenham", "Valencia", "Paris S-G", "Marseille", "Juventus",
             "Aston Villa", "Newcastle Utd", "Lazio"
