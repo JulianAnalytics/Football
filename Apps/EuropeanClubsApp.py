@@ -95,9 +95,21 @@ class EuroQuiz:
         # Get all teams from DataFrame for selection
         all_available_teams = sorted(self.df['Squad'].unique())
         
+        # League to flag mapping
+        league_flags = {
+            "All": "🌍",  # World emoji for All
+            "Premier League": "🇬🇧",  # GB flag
+            "La Liga": "🇪🇸",  # ES flag
+            "Bundesliga": "🇩🇪",  # DE flag
+            "Serie A": "🇮🇹",  # IT flag
+            "Ligue 1": "🇫🇷"  # FR flag
+        }
+
         # Filter teams based on selected league
         leagues = ["All"] + list(self.leagues)
-        selected_league = st.selectbox("🌍 Filter by League:", leagues, key="league_filter")
+        league_options = [f"{league_flags.get(league, '')} {league}" for league in leagues]
+        selected_league_with_flag = st.selectbox("Filter by League:", league_options, key="league_filter")
+        selected_league = selected_league_with_flag.split(' ', 1)[1] if ' ' in selected_league_with_flag else selected_league_with_flag
         st.session_state.selected_league = selected_league
 
         # Filter teams for selection dropdown
@@ -119,7 +131,7 @@ class EuroQuiz:
             return
 
         # Randomise button
-        if st.button("🌀 Randomise Teams"):
+        if st.button("🎲 Randomise Teams"):
             team1, team2 = random.sample(random_teams, 2)
             st.session_state.team1 = team1
             st.session_state.team2 = team2
