@@ -30,6 +30,9 @@ class EuroQuiz:
             self.df['Squad_normalized'] = self.df['Squad'].str.casefold()
             self.df['YearBorn'] = pd.to_numeric(self.df['Born'], errors='coerce', downcast='integer')
 
+            # Get unique leagues from the data
+            self.leagues = sorted(self.df['League'].unique())
+
             self.team_map = dict(zip(self.df['Squad_normalized'], self.df['Squad']))
             self.all_teams = sorted(self.team_map.keys())
 
@@ -52,6 +55,8 @@ class EuroQuiz:
             st.session_state.team1 = "Arsenal"
         if 'team2' not in st.session_state:
             st.session_state.team2 = "Barcelona"
+        if 'selected_league' not in st.session_state:
+            st.session_state.selected_league = "All"
 
     def find_players_for_team(self, team_normalized):
         team_df = self.df[self.df['Squad_normalized'] == team_normalized]
@@ -87,6 +92,16 @@ class EuroQuiz:
             "Aston Villa", "Newcastle Utd", "Lazio"
         ]
 
+        # Add league filter
+        leagues = ["All"] + list(self.leagues)
+        selected_league = st.selectbox("🌍 Filter by League:", leagues, key="league_filter")
+        st.session_state.selected_league = selected_league
+
+        # Filter teams based on selected league
+        if selected_league != "All":
+            league_teams = self.df[self.df['League'] == selected_league]['Squad'].unique()
+            custom_team_list = [team for team in custom_team_list if team in league_teams]
+
         # Randomise button
         if st.button("🎲 Randomise Teams"):
             team1, team2 = random.sample(custom_team_list, 2)
@@ -102,19 +117,25 @@ class EuroQuiz:
         default_team1_normalized = default_team1.casefold()
         default_team2_normalized = default_team2.casefold()
 
+        # Filter teams for selectboxes based on selected league
+        available_teams = self.all_teams
+        if selected_league != "All":
+            league_teams = self.df[self.df['League'] == selected_league]['Squad_normalized'].unique()
+            available_teams = [team for team in self.all_teams if team in league_teams]
+
         col1, col2 = st.columns(2)
 
         with col1:
             team1_display = st.selectbox("Select First Team:",
-                [self.team_map[t] for t in self.all_teams],
+                [self.team_map[t] for t in available_teams],
                 key='team1',
-                index=self.all_teams.index(default_team1_normalized) if default_team1_normalized in self.all_teams else 0
+                index=available_teams.index(default_team1_normalized) if default_team1_normalized in available_teams else 0
             )
         with col2:
             team2_display = st.selectbox("Select Second Team:",
-                [self.team_map[t] for t in self.all_teams],
+                [self.team_map[t] for t in available_teams],
                 key='team2',
-                index=self.all_teams.index(default_team2_normalized) if default_team2_normalized in self.all_teams else 1
+                index=available_teams.index(default_team2_normalized) if default_team2_normalized in available_teams else 1
             )
 
         team1_normalized = self.get_normalized_team_name(team1_display)
@@ -232,5 +253,3 @@ class EuroQuiz:
 
 if __name__ == "__main__":
     quiz = EuroQuiz()
-
-
