@@ -107,10 +107,9 @@ class EuroQuiz:
         else:
             selection_teams = all_available_teams
 
-        # Filter random team list based on league
+        # For randomization: use all teams from selected league, or restricted list for 'All'
         if selected_league != "All":
-            random_teams = [team for team in random_team_list 
-                          if team in self.df[self.df['League'] == selected_league]['Squad'].values]
+            random_teams = sorted(self.df[self.df['League'] == selected_league]['Squad'].unique())
         else:
             random_teams = random_team_list
 
