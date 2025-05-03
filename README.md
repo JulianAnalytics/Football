@@ -11,6 +11,3 @@
 ⚽ Visualisations including match dashboards and passing networks
 
 ⚽ Shotmap in R which illustrates the outcome of all of Mo Salah´s 2019/20 shots
-
-
-https://players-in-common.streamlit.app/
