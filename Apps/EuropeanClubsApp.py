@@ -30,9 +30,7 @@ class EuroQuiz:
             self.df['Squad_normalized'] = self.df['Squad'].str.casefold()
             self.df['YearBorn'] = pd.to_numeric(self.df['Born'], errors='coerce', downcast='integer')
 
-            # Get unique leagues from the data
             self.leagues = sorted(self.df['League'].unique())
-
             self.team_map = dict(zip(self.df['Squad_normalized'], self.df['Squad']))
             self.all_teams = sorted(self.team_map.keys())
 
@@ -57,6 +55,10 @@ class EuroQuiz:
             st.session_state.team2 = "Barcelona"
         if 'selected_league' not in st.session_state:
             st.session_state.selected_league = "All"
+        if 'previous_team1' not in st.session_state:
+            st.session_state.previous_team1 = ""
+        if 'previous_team2' not in st.session_state:
+            st.session_state.previous_team2 = ""
 
     def find_players_for_team(self, team_normalized):
         team_df = self.df[self.df['Squad_normalized'] == team_normalized]
@@ -64,6 +66,12 @@ class EuroQuiz:
 
     def normalize_string(self, text):
         return ''.join(c for c in unicodedata.normalize('NFD', text) if unicodedata.category(c) != 'Mn')
+
+    def get_normalized_team_name(self, team_display_name):
+        for norm, disp in self.team_map.items():
+            if disp == team_display_name:
+                return norm
+        return team_display_name.casefold()
 
     def create_ui(self):
         st.markdown("""
@@ -84,7 +92,6 @@ class EuroQuiz:
         3. Get points for correct guesses!
         """)
 
-        # List of teams for randomization
         random_team_list = [
             "Arsenal", "Chelsea", "Real Madrid", "Bayern Munich", "Atlético Madrid",
             "Dortmund", "Milan", "Inter", "Liverpool", "Manchester City", "Manchester Utd",
@@ -92,93 +99,60 @@ class EuroQuiz:
             "Aston Villa", "Newcastle Utd", "Lazio"
         ]
 
-        # Get all teams from DataFrame for selection
         all_available_teams = sorted(self.df['Squad'].unique())
-        
-        # League to flag mapping
+
         league_flags = {
-            "All": "🌍",  # World emoji for All
-            "Premier League": "🏴󠁧󠁢󠁥󠁮󠁧󠁿",  # England flag
-            "La Liga": "🇪🇸",  # ES flag
-            "Bundesliga": "🇩🇪",  # DE flag
-            "Serie A": "🇮🇹",  # IT flag
-            "Ligue 1": "🇫🇷"  # FR flag
+            "All": "🌍", "Premier League": "🏴", "La Liga": "🇪🇸",
+            "Bundesliga": "🇩🇪", "Serie A": "🇮🇹", "Ligue 1": "🇫🇷"
         }
 
-        # Filter teams based on selected league
         leagues = ["All"] + list(self.leagues)
         league_options = [f"{league_flags.get(league, '')} {league}" for league in leagues]
         selected_league_with_flag = st.selectbox("Filter by League:", league_options, key="league_filter")
         selected_league = selected_league_with_flag.split(' ', 1)[1] if ' ' in selected_league_with_flag else selected_league_with_flag
         st.session_state.selected_league = selected_league
 
-        # Filter teams for selection dropdown
         if selected_league != "All":
             league_teams = self.df[self.df['League'] == selected_league]['Squad'].unique()
             selection_teams = sorted(league_teams)
         else:
             selection_teams = all_available_teams
 
-        # For randomization: use all teams from selected league, or restricted list for 'All'
-        if selected_league != "All":
-            random_teams = sorted(self.df[self.df['League'] == selected_league]['Squad'].unique())
-        else:
-            random_teams = random_team_list
+        random_teams = selection_teams if selected_league != "All" else random_team_list
 
-        # Use the filtered teams for randomization
         if len(random_teams) < 2:
             st.error(f"Not enough teams in {selected_league} to randomize. Please select a different league.")
             return
 
-        # Randomise button
         if st.button("🎲 Randomise Teams"):
             team1, team2 = random.sample(random_teams, 2)
             st.session_state.team1 = team1
             st.session_state.team2 = team2
 
-            # Clear previous guesses when teams are randomized
-            st.session_state.guesses = []
-
-        # Use session state for default values
-        default_team1 = st.session_state.get("team1", "Arsenal")
-        default_team2 = st.session_state.get("team2", "Barcelona")
-        default_team1_normalized = default_team1.casefold()
-        default_team2_normalized = default_team2.casefold()
-
         col1, col2 = st.columns(2)
-
         with col1:
-            team1_display = st.selectbox("Select First Team:",
-                selection_teams,
-                key='team1',
-                index=selection_teams.index(default_team1) if default_team1 in selection_teams else 0
-            )
+            team1_display = st.selectbox("Select First Team:", selection_teams, key='team1')
         with col2:
-            team2_display = st.selectbox("Select Second Team:",
-                selection_teams,
-                key='team2',
-                index=selection_teams.index(default_team2) if default_team2 in selection_teams else 1
-            )
+            team2_display = st.selectbox("Select Second Team:", selection_teams, key='team2')
 
-        team1_normalized = self.get_normalized_team_name(team1_display)
-        team2_normalized = self.get_normalized_team_name(team2_display)
+        team1_norm = self.get_normalized_team_name(team1_display)
+        team2_norm = self.get_normalized_team_name(team2_display)
 
-        # Reset guesses when teams are changed
-        if team1_normalized != default_team1_normalized or team2_normalized != default_team2_normalized:
+        # If team selection changed, reset session state
+        if (team1_norm != st.session_state.previous_team1) or (team2_norm != st.session_state.previous_team2):
             st.session_state.guesses = []
+            st.session_state.correct_count = 0
+            st.session_state.show_answers = False
+            st.session_state.common_players = []
+            st.session_state.common_raw = set()
+            st.session_state.previous_team1 = team1_norm
+            st.session_state.previous_team2 = team2_norm
 
-        # Call find_connections immediately after team selection or randomization
-        if team1_normalized != team2_normalized:
-            self.find_connections(team1_normalized, team2_normalized)
+        if team1_norm != team2_norm:
+            self.find_connections(team1_norm, team2_norm)
 
         if st.session_state.common_players:
             self.show_quiz_interface()
-
-    def get_normalized_team_name(self, team_display_name):
-        for norm, disp in self.team_map.items():
-            if disp == team_display_name:
-                return norm
-        return team_display_name.casefold()
 
     def find_connections(self, team1_norm, team2_norm):
         team1_players = self.find_players_for_team(team1_norm)
@@ -195,8 +169,6 @@ class EuroQuiz:
 
         team1_display = self.team_map.get(team1_norm, team1_norm.title())
         team2_display = self.team_map.get(team2_norm, team2_norm.title())
-
-        # Display the number of common players immediately
         st.info(f"🎯 Find {len(st.session_state.common_players)} players who have played for both {team1_display} and {team2_display}")
 
     def show_quiz_interface(self):
@@ -213,7 +185,6 @@ class EuroQuiz:
 
                     if guess_normalized not in already_guessed:
                         st.session_state.guesses.append(guess)
-
                         matched = False
                         for player, _ in st.session_state.common_raw:
                             player_norm = self.normalize_string(player.lower())
@@ -222,7 +193,6 @@ class EuroQuiz:
                                 fuzz.token_set_ratio(guess_normalized, surname) >= 90):
                                 matched = True
                                 break
-
                         if matched:
                             st.session_state.correct_count += 1
 
@@ -275,3 +245,4 @@ class EuroQuiz:
 
 if __name__ == "__main__":
     quiz = EuroQuiz()
+
