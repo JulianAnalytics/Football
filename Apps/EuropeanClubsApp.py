@@ -102,7 +102,7 @@ class EuroQuiz:
         all_available_teams = sorted(self.df['Squad'].unique())
 
         league_flags = {
-            "All": "🌍", "Premier League": "🏴", "La Liga": "🇪🇸",
+            "All": "🌍", "Premier League": "🇬🇧", "La Liga": "🇪🇸",
             "Bundesliga": "🇩🇪", "Serie A": "🇮🇹", "Ligue 1": "🇫🇷"
         }
 
