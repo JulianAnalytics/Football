@@ -1,6 +1,6 @@
 <h3>My collection of football-related data models and visualisations:<h6>
 
-⚽ A game that challenges your knowledge of European football. You can play it as a web application here: [Players in Common Challenge](https://players-in-common.streamlit.app/)
+⚽ A game that challenges your knowledge of European football. You can play it as a web application here: [Players in Common Challenge](https://juliananalytics.com/players-in-common)
 
 ⚽ Several machine learning projects predicting match outcomes, FIFA rankings, and goals using models such as linear regression, random forest, and XGBoost
 
